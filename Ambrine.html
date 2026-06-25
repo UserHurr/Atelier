@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier Al Maida - Mode Beige v9</title>
+    <style>
+        :root {
+            --bg-color: #f9f8f6;       /* Crème très clair */
+            --card-bg: #ffffff;        
+            --text-color: #4a3f35;     /* Brun foncé */
+            --text-muted: #8c7e71;     /* Taupe */
+            --accent: #c4a482;         /* Beige chaud / Camel */
+            --accent-hover: #b08d6a;
+            --success: #a39581;        /* Brun grisé doux (remplace le vert) */
+            --danger: #c28d82;         /* Terracotta très sourd (remplace le rouge) */
+            --border: #e8e3dc;         /* Bordures beige clair */
+            --blue: #d4c4b4;           /* Sable (remplace le bleu) */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        h1 { margin: 0; font-size: 24px; font-weight: 600; color: var(--text-color); }
+        h2 { font-size: 16px; margin-top: 0; margin-bottom: 15px; color: var(--text-color); border-left: 3px solid var(--accent); padding-left: 8px; }
+        h3 { font-size: 14px; color: var(--text-muted); margin-top: 0; margin-bottom: 10px; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .tab-btn {
+            background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; width: auto;
+            transition: all 0.2s;
+        }
+        .tab-btn.active { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .tab-btn:hover:not(.active) { background-color: rgba(196, 164, 130, 0.1); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .kpi-card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .kpi-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-value { font-size: 20px; font-weight: 700; margin-top: 5px; }
+
+        .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+        input, select {
+            width: 100%; padding: 10px; background-color: var(--card-bg);
+            border: 1px solid var(--border); border-radius: 6px; color: var(--text-color);
+            box-sizing: border-box; font-size: 14px;
+        }
+        input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px rgba(196, 164, 130, 0.15); }
+
+        button {
+            width: 100%; padding: 11px; background-color: var(--accent); border: none;
+            border-radius: 6px; color: #fff; font-weight: 600; cursor: pointer; font-size: 14px;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: var(--accent-hover); }
+
+        .table-container { max-height: 300px; overflow-y: auto; margin-top: 10px; border: 1px solid var(--border); border-radius: 6px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; background-color: var(--card-bg); }
+        th { padding: 12px 10px; color: var(--text-muted); background-color: var(--bg-color); border-bottom: 2px solid var(--border); font-weight: 600; }
+        td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
+        tr:hover { background-color: var(--bg-color); }
+        
+        .action-btns { display: flex; gap: 5px; }
+        .btn-small { width: auto; padding: 4px 8px; font-size: 11px; font-weight: 500; border-radius: 4px; }
+        .btn-edit { background-color: var(--text-muted); color: white; }
+        .btn-del { background-color: var(--danger); color: white; }
+        .btn-save { background-color: var(--success); color: white; }
+
+        .stock-actions { display: flex; align-items: center; gap: 5px; }
+        .btn-qty { width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; color: white; }
+
+        .panier-box {
+            background-color: var(--bg-color); border: 1px dashed var(--accent);
+            border-radius: 6px; padding: 10px; margin-top: 10px; margin-bottom: 15px;
+        }
+
+        .visual-bar-container {
+            background-color: var(--border); height: 25px; border-radius: 6px;
+            overflow: hidden; display: flex; margin: 20px 0; border: 1px solid var(--border);
+        }
+        .bar-seg { height: 100%; transition: width 0.3s ease; }
+        .bar-seg.inv { background-color: var(--blue); }
+        .bar-seg.prod { background-color: var(--success); }
+        .bar-seg.frais { background-color: var(--danger); }
+
+        .legend-list { font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .dot.inv { background-color: var(--blue); }
+        .dot.prod { background-color: var(--success); }
+        .dot.frais { background-color: var(--danger); }
+
+        .info-conversion { font-size: 11px; color: var(--accent); margin-top: 4px; display: block; font-weight: 500; }
+        .clear-btn { background-color: transparent; border: 1px solid var(--danger); color: var(--danger); width: auto; padding: 4px 8px; font-size: 11px; }
+        .clear-btn:hover { background-color: rgba(194, 141, 130, 0.1); }
+
+        .badge { padding: 3px 6px; border-radius: 4px; font-weight: 600; font-size: 11px; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Atelier Al Maida</h1>
+        <button class="clear-btn" onclick="reinitialiserDonnees()">Tout effacer</button>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('page-ops')">Opérations (Ventes & Achats)</button>
+        <button class="tab-btn" onclick="switchTab('page-stocks')">Recettes & Stocks</button>
+    </div>
+
+    <!-- PAGE 1 : OPERATIONS -->
+    <div id="page-ops" class="tab-content active">
+        <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-label">Chiffre d'Affaires</div><div class="kpi-value" id="kpi-ca" style="color: var(--success);">0,00 €</div></div>
+            <div class="kpi-card"><div class="kpi-label">Dépenses Totales</div><div class="kpi-value" id="kpi-depenses" style="color:var(--danger)">0,00 €</div></div>
+            <div class="kpi-card"><div class="kpi-label">Bénéfice Net</div><div class="kpi-value" id="kpi-benefice" style="color: var(--text-color);">0,00 €</div></div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Formulaire Achat -->
+            <div class="card">
+                <h2>+ Enregistrer un Achat</h2>
+                <form id="form-achat" onsubmit="ajouterAchat(event)">
+                    <div class="form-group"><label>Date de l'achat</label><input type="date" id="achat-date" required></div>
+                    <div class="form-group">
+                        <label>Catégorie de dépense</label>
+                        <select id="achat-categorie" onchange="basculerTypeAchatInput()">
+                            <option value="Coût Production">Coût de Production (Ingrédients, Boîtes...)</option>
+                            <option value="Investissement">Investissement (Matériel labo...)</option>
+                            <option value="Frais Divers">Charges / Frais Divers</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="group-achat-select">
+                        <label>Sélectionner l'ingrédient / article</label>
+                        <select id="achat-produit" onchange="majInfoLabeAchats()"></select>
+                        <span id="achat-info-taille" class="info-conversion"></span>
+                    </div>
+
+                    <div class="form-group" id="group-achat-libre" style="display: none;">
+                        <label>Nom de la dépense (Saisie manuelle)</label>
+                        <input type="text" id="achat-produit-libre" placeholder="Ex: Robot pâtissier, Pub, Ustensiles">
+                    </div>
+
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label id="label-achat-qte">Nombre de paquets</label><input type="number" id="achat-quantite" value="1" min="1" required></div>
+                        <div><label>Coût unitaire (€)</label><input type="number" step="0.01" id="achat-cout" placeholder="0.00" required></div>
+                    </div>
+                    <button type="submit">Enregistrer l'achat</button>
+                </form>
+            </div>
+
+            <!-- Formulaire Vente -->
+            <div class="card">
+                <h2>+ Enregistrer une Vente</h2>
+                <form id="form-vente-config">
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label>Date de commande</label><input type="date" id="vente-date" required></div>
+                        <div><label>Date de livraison souhaitée</label><input type="date" id="vente-date-livraison" required></div>
+                    </div>
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label>Client / Événement</label><input type="text" id="vente-client" placeholder="Nom de la cliente" required></div>
+                        <div>
+                            <label>Statut initial</label>
+                            <select id="vente-statut">
+                                <option value="En cours">En cours</option>
+                                <option value="Terminée">Terminée</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--bg-color); border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                        <label>Sélectionner un produit :</label>
+                        <select id="vente-produit" onchange="appliquerPrixParDefaut()" style="margin-bottom:8px;"></select>
+                        <label>Prix unitaire appliqué (€)</label>
+                        <input type="number" step="0.01" id="vente-prix" style="margin-bottom:8px;">
+                        <button type="button" onclick="ajouterAuPanierTemporaire()" style="background-color: var(--blue); color: var(--text-color); padding: 7px; font-size:12px;">+ Ajouter à cette commande</button>
+                    </div>
+
+                    <label>Contenu de la commande :</label>
+                    <div class="panier-box" id="liste-panier-encours">
+                        <span style="color:var(--text-muted); font-size:12px;">Aucun produit sélectionné.</span>
+                    </div>
+                    <div style="margin-bottom:12px; font-size:14px; text-align:right;">Total Commande : <strong id="total-panier-txt" style="color:var(--text-color)">0.00 €</strong></div>
+
+                    <button type="button" onclick="validerTouteLaCommande(event)">Enregistrer la commande globale</button>
+                </form>
+            </div>
+
+            <!-- Répartition Visuelle -->
+            <div class="card">
+                <h2>Répartition Visuelle des Dépenses</h2>
+                <div class="visual-bar-container">
+                    <div id="bar-inv" class="bar-seg inv" style="width: 0%"></div>
+                    <div id="bar-prod" class="bar-seg prod" style="width: 0%"></div>
+                    <div id="bar-frais" class="bar-seg frais" style="width: 0%"></div>
+                </div>
+                <div class="legend-list">
+                    <div class="legend-item"><span class="dot inv"></span> <span>Investissements : <strong id="txt-inv">0.00 €</strong> (<span id="pct-inv">0%</span>)</span></div>
+                    <div class="legend-item"><span class="dot prod"></span> <span>Coûts de Production : <strong id="txt-prod">0.00 €</strong> (<span id="pct-prod">0%</span>)</span></div>
+                    <div class="legend-item"><span class="dot frais"></span> <span>Charges / Frais Divers : <strong id="txt-frais">0.00 €</strong> (<span id="pct-frais">0%</span>)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historiques -->
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>Historique des Ventes & Commandes</h2>
+            <div class="table-container">
+                <table id="table-ventes">
+                    <thead><tr><th>Dates (Saisie ➔ Livraison)</th><th>Cliente / Événement</th><th>Articles (Coût de revient)</th><th>Total payé</th><th>Statut</th><th>Actions</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Historique des Achats & Approvisionnements</h2>
+            <div class="table-container">
+                <table id="table-achats">
+                    <thead><tr><th>Date</th><th>Élément</th><th>Catégorie</th><th>Coût Total</th><th>Actions</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 : RECETTES & STOCKS -->
+    <div id="page-stocks" class="tab-content">
+        <div class="main-grid">
+            <!-- Catalogue et Création Recettes -->
+            <div class="card">
+                <h2>1. Catalogue des Ventes</h2>
+                <form id="form-catalogue" onsubmit="ajouterAuCatalogue(event)">
+                    <div class="form-group"><label>Nom du Produit (ex: Boîte de 25 Brownies)</label><input type="text" id="cat-nom" required></div>
+                    <div class="form-group"><label>Prix de vente de base (€)</label><input type="number" step="0.01" id="cat-prix" value="35.00" required></div>
+                    <button type="submit">Ajouter au catalogue</button>
+                </form>
+                <div class="table-container" style="max-height: 120px; margin-bottom: 20px;">
+                    <table id="table-catalogue"><thead><tr><th>Produit</th><th>Prix Base</th><th>Action</th></tr></thead><tbody></tbody></table>
+                </div>
+
+                <h2>2. Configuration de la Recette</h2>
+                <div class="form-group">
+                    <label>Sélectionner le produit fini</label>
+                    <select id="recette-produit-select" onchange="afficherRecetteProduit()"></select>
+                </div>
+                <form id="form-recette-ing" onsubmit="ajouterIngredientRecette(event)" style="display:grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: end;">
+                    <div class="form-group" style="margin:0;">
+                        <label>Sélectionner l'article</label>
+                        <select id="recette-ing-nom" onchange="majUnitetLabelRecette()"></select>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label id="label-recette-qte">Quantité</label>
+                        <input type="number" id="recette-ing-qte" value="10" min="1" required>
+                    </div>
+                    <button type="submit" style="padding:8px 12px;">+</button>
+                </form>
+                <div class="table-container" style="max-height: 180px; margin-top:15px;">
+                    <table id="table-recette-composition"><thead><tr><th>Article requis</th><th>Quantité cible</th><th>Action</th></tr></thead><tbody></tbody></table>
+                </div>
+            </div>
+
+            <!-- Ingrédients & Stock Global -->
+            <div class="card">
+                <h2>3. Ajouter un Nouvel Ingrédient / Emballage Récurrent</h2>
+                <form id="form-nouvel-ing" onsubmit="creerNouvelIngredient(event)">
+                    <div class="form-group"><label>Nom de l'élément</label><input type="text" id="new-ing-nom" placeholder="Ex: Lben, Farine T55, Rubans" required></div>
+                    <div class="form-group">
+                        <label>Nature de l'article</label>
+                        <select id="new-ing-classe" onchange="toggleFormTypeEmballage()">
+                            <option value="Ingrédient">Ingrédient (Alimentaire - poids/volume)</option>
+                            <option value="Emballage">Emballage (Boîtes, piques - unité brute)</option>
+                        </select>
+                    </div>
+                    <div id="div-mesures-conditionnement" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:12px;">
+                        <div>
+                            <label>Type de Mesure</label>
+                            <select id="new-ing-type" onchange="majExempleConversion()">
+                                <option value="g">Poids (Grammes - g)</option>
+                                <option value="ml">Volume (Millilitres - ml)</option>
+                                <option value="U">Unité (Pièces - U)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Taille d'un paquet acheté</label>
+                            <input type="number" id="new-ing-taille" value="250" min="1">
+                        </div>
+                    </div>
+                    <span id="lbl-exemple-conv" style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:10px;">Exemple : 1 paquet = 250g</span>
+                    <button type="submit">Créer l'article master</button>
+                </form>
+
+                <!-- AJOUT DE L'ESPACE ICI VIA STYLE DIRECT (margin-top: 35px;) -->
+                <h2 style="margin-top: 35px;">stock ingredient</h2>
+                <div class="table-container" style="max-height: 220px; margin-bottom: 20px;">
+                    <table id="table-stock-ingredients">
+                        <thead><tr><th>Ingrédient</th><th>En Stock</th><th>En Paquets</th><th>Ajuster</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- AJOUT DE L'ESPACE ICI AUSSI POUR HARMONISER LES BLOCS -->
+                <h2 style="margin-top: 35px;">stock emballage</h2>
+                <div class="table-container" style="max-height: 220px;">
+                    <table id="table-stock-emballages">
+                        <thead><tr><th>Emballage</th><th>Quantité brute</th><th>Ajuster</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Configuration Base de Données Globale
+    let baseIngredients = JSON.parse(localStorage.getItem('base_ingredients_v9')) || [
+        { nom: "Oeufs", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Chocolat", type: "g", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Farine", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Beurre", type: "g", taillePaquet: 250, classe: "Ingrédient" },
+        { nom: "Cassonade", type: "g", taillePaquet: 750, classe: "Ingrédient" },
+        { nom: "Sucre blanc", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Cacao en poudre", type: "g", taillePaquet: 250, classe: "Ingrédient" },
+        { nom: "Boîtes carton", type: "U", taillePaquet: 1, classe: "Emballage" },
+        { nom: "Pots carton", type: "U", taillePaquet: 1, classe: "Emballage" }
+    ];
+
+    let achats = JSON.parse(localStorage.getItem('achats_v9')) || [];
+    let ventes = JSON.parse(localStorage.getItem('ventes_v9')) || [];
+    let catalogue = JSON.parse(localStorage.getItem('catalogue_v9')) || [
+        {id: 1, nom: "Boîte de Brownies", prix: 35},
+        {id: 2, nom: "Plateau Pink Burgers", prix: 35},
+        {id: 3, nom: "Box Dynamite Chicken", prix: 35}
+    ];
+    let recettes = JSON.parse(localStorage.getItem('recettes_v9')) || {
+        "Boîte de Brownies": [{ingredient: "Oeufs", qte: 2}, {ingredient: "Chocolat", qte: 100}]
+    };
+    let stockGlobal = JSON.parse(localStorage.getItem('stock_v9')) || {};
+    let panierTemporaire = [];
+
+    baseIngredients.forEach(ing => { if(stockGlobal[ing.nom] === undefined) stockGlobal[ing.nom] = 0; });
+
+    const codeAujourdhui = new Date().toISOString().split('T')[0];
+    document.getElementById('achat-date').value = codeAujourdhui;
+    document.getElementById('vente-date').value = codeAujourdhui;
+    document.getElementById('vente-date-livraison').value = codeAujourdhui;
+
+    function formatFr(dateIso) {
+        if(!dateIso) return "-";
+        const p = dateIso.split('-');
+        return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : dateIso;
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function toggleFormTypeEmballage() {
+        const classe = document.getElementById('new-ing-classe').value;
+        document.getElementById('div-mesures-conditionnement').style.display = (classe === "Emballage") ? "none" : "grid";
+    }
+
+    function basculerTypeAchatInput() {
+        const cat = document.getElementById('achat-categorie').value;
+        const groupSelect = document.getElementById('group-achat-select');
+        const groupLibre = document.getElementById('group-achat-libre');
+
+        if(cat === "Coût Production") {
+            groupSelect.style.display = "block"; groupLibre.style.display = "none";
+            majInfoLabeAchats();
+        } else {
+            groupSelect.style.display = "none"; groupLibre.style.display = "block";
+            document.getElementById('achat-info-taille').innerText = "";
+        }
+    }
+
+    function majExempleConversion() {
+        const type = document.getElementById('new-ing-type').value;
+        const size = document.getElementById('new-ing-taille').value;
+        document.getElementById('lbl-exemple-conv').innerText = `Exemple : 1 paquet acheté = ${size} ${type}`;
+    }
+    document.getElementById('new-ing-taille').addEventListener('input', majExempleConversion);
+
+    function rafraichirTousLesSelects() {
+        const selAchat = document.getElementById('achat-produit');
+        const selVente = document.getElementById('vente-produit');
+        const selRecetteProd = document.getElementById('recette-produit-select');
+        const selRecetteIng = document.getElementById('recette-ing-nom');
+
+        const ancAchat = selAchat.value; const ancVente = selVente.value; const ancRecProd = selRecetteProd.value;
+
+        selAchat.innerHTML = '';
+        let triIngredients = [...baseIngredients].sort((a,b) => a.nom.localeCompare(b.nom));
+        
+        triIngredients.forEach(ing => { selAchat.innerHTML += `<option value="${ing.nom}">${ing.nom}</option>`; });
+        if(ancAchat) selAchat.value = ancAchat;
+
+        selRecetteIng.innerHTML = '';
+        triIngredients.forEach(ing => { selRecetteIng.innerHTML += `<option value="${ing.nom}">${ing.nom}</option>`; });
+
+        selVente.innerHTML = ''; selRecetteProd.innerHTML = '';
+        catalogue.forEach(p => {
+            selVente.innerHTML += `<option value="${p.nom}">${p.nom}</option>`;
+            selRecetteProd.innerHTML += `<option value="${p.nom}">${p.nom}</option>`;
+        });
+        
+        if(ancVente) selVente.value = ancVente;
+        if(ancRecProd) selRecetteProd.value = ancRecProd;
+
+        majInfoLabeAchats(); majUnitetLabelRecette(); appliquerPrixParDefaut(); afficherRecetteProduit();
+    }
+
+    function majInfoLabeAchats() {
+        const nom = document.getElementById('achat-produit').value;
+        if(!nom) return;
+        const ing = baseIngredients.find(i => i.nom === nom);
+        if(ing) {
+            document.getElementById('achat-info-taille').innerText = (ing.classe === "Emballage") ? `💡 Article suivi à la pièce` : `💡 1 paquet = ${ing.taillePaquet} ${ing.type}`;
+        }
+    }
+
+    function majUnitetLabelRecette() {
+        const nom = document.getElementById('recette-ing-nom').value;
+        if(!nom) return;
+        const ing = baseIngredients.find(i => i.nom === nom);
+        if(ing) {
+            document.getElementById('label-recette-qte').innerText = (ing.classe === "Emballage") ? `Quantité (U)` : `Quantité (${ing.type})`;
+        }
+    }
+
+    function appliquerPrixParDefaut() {
+        const prod = catalogue.find(p => p.nom === document.getElementById('vente-produit').value);
+        if(prod) document.getElementById('vente-prix').value = prod.prix;
+    }
+
+    function creerNouvelIngredient(e) {
+        e.preventDefault();
+        const nom = document.getElementById('new-ing-nom').value.trim();
+        const nomPropre = nom.charAt(0).toUpperCase() + nom.slice(1);
+        const classe = document.getElementById('new-ing-classe').value;
+        let type = "U", taille = 1;
+        
+        if(classe === "Ingrédient") {
+            type = document.getElementById('new-ing-type').value;
+            taille = parseInt(document.getElementById('new-ing-taille').value);
+        }
+
+        if(!baseIngredients.some(i => i.nom.toLowerCase() === nomPropre.toLowerCase())) {
+            baseIngredients.push({ nom: nomPropre, type: type, taillePaquet: taille, classe: classe });
+            stockGlobal[nomPropre] = 0;
+            localStorage.setItem('base_ingredients_v9', JSON.stringify(baseIngredients));
+            rafraichirTousLesSelects(); recalculerTout();
+        }
+        document.getElementById('form-nouvel-ing').reset();
+        toggleFormTypeEmballage();
+    }
+
+    // CALCUL DU COÛT DE REVIENT
+    function getCoutRevientRecette(nomProduit) {
+        const compo = recettes[nomProduit] || [];
+        let coutTotal = 0;
+        compo.forEach(ingReq => {
+            const ingDef = baseIngredients.find(i => i.nom === ingReq.ingredient);
+            if(ingDef) {
+                const achatsIng = achats.filter(a => a.produit === ingReq.ingredient);
+                if(achatsIng.length > 0) {
+                    let totalCout = 0; let totalPaquets = 0;
+                    achatsIng.forEach(a => { 
+                        totalCout += (a.cout * a.quantite); 
+                        totalPaquets += a.quantite; 
+                    });
+                    const coutMoyenPaquet = totalCout / totalPaquets;
+                    const coutUnitaire = coutMoyenPaquet / ingDef.taillePaquet;
+                    coutTotal += (coutUnitaire * ingReq.qte);
+                }
+            }
+        });
+        return coutTotal;
+    }
+
+    // PANIER ET COMMANDES VENTES
+    function ajouterAuPanierTemporaire() {
+        const produit = document.getElementById('vente-produit').value;
+        const prix = parseFloat(document.getElementById('vente-prix').value) || 0;
+        const coutEstime = getCoutRevientRecette(produit);
+        panierTemporaire.push({ produit: produit, prix: prix, cout: coutEstime });
+        majRenduPanierVisuel();
+    }
+
+    function majRenduPanierVisuel() {
+        const box = document.getElementById('liste-panier-encours'); box.innerHTML = ''; let total = 0;
+        if(panierTemporaire.length === 0) {
+            box.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">Aucun produit sélectionné.</span>`;
+            document.getElementById('total-panier-txt').innerText = "0.00 €"; return;
+        }
+        panierTemporaire.forEach((item, idx) => {
+            total += item.prix;
+            box.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:5px; border-bottom:1px solid var(--border); padding-bottom:5px;">
+                    <span>• <strong>${item.produit}</strong> <br>
+                    <span style="font-size:11px; color:var(--text-muted); margin-left:10px;">Vendu: ${item.prix.toFixed(2)} € | Coût ingr.: ~${item.cout.toFixed(2)} €</span></span>
+                    <button type="button" onclick="retirerDuPanierTemporaire(${idx})" style="width:auto; background:var(--danger); font-size:10px; padding:4px 8px;">X</button>
+                </div>`;
+        });
+        document.getElementById('total-panier-txt').innerText = total.toFixed(2) + " €";
+    }
+
+    function retirerDuPanierTemporaire(idx) { panierTemporaire.splice(idx, 1); majRenduPanierVisuel(); }
+
+    function validerTouteLaCommande(e) {
+        e.preventDefault();
+        const client = document.getElementById('vente-client').value.trim();
+        if(!client) { alert("Saisis un nom pour la cliente."); return; }
+        if(panierTemporaire.length === 0) { alert("Ton panier actuel est vide."); return; }
+
+        let totalFacture = panierTemporaire.reduce((sum, item) => sum + item.prix, 0);
+
+        ventes.push({
+            id: Date.now(),
+            date: document.getElementById('vente-date').value,
+            dateLivraison: document.getElementById('vente-date-livraison').value,
+            client: client,
+            statut: document.getElementById('vente-statut').value,
+            prix: totalFacture,
+            articles: [...panierTemporaire]
+        });
+
+        panierTemporaire.forEach(item => {
+            const composition = recettes[item.produit] || [];
+            composition.forEach(ingReq => {
+                if(stockGlobal[ingReq.ingredient] !== undefined) stockGlobal[ingReq.ingredient] -= parseInt(ingReq.qte);
+            });
+        });
+
+        panierTemporaire = [];
+        document.getElementById('vente-client').value = '';
+        document.getElementById('vente-date').value = codeAujourdhui;
+        document.getElementById('vente-date-livraison').value = codeAujourdhui;
+        majRenduPanierVisuel(); recalculerTout();
+    }
+
+    // ACHATS
+    function ajouterAchat(e) {
+        e.preventDefault();
+        const cat = document.getElementById('achat-categorie').value;
+        const nbrePaquets = parseInt(document.getElementById('achat-quantite').value);
+        const coutPaquet = parseFloat(document.getElementById('achat-cout').value);
+        let nomFinal = "";
+
+        if(cat === "Coût Production") {
+            nomFinal = document.getElementById('achat-produit').value;
+            const ing = baseIngredients.find(i => i.nom === nomFinal);
+            if(ing) stockGlobal[nomFinal] = (stockGlobal[nomFinal] || 0) + (nbrePaquets * ing.taillePaquet);
+        } else {
+            nomFinal = document.getElementById('achat-produit-libre').value.trim();
+            if(!nomFinal) { alert("Donne un nom à ta dépense."); return; }
+        }
+
+        achats.push({
+            id: Date.now(),
+            date: document.getElementById('achat-date').value,
+            produit: nomFinal, quantite: nbrePaquets, cout: coutPaquet, categorie: cat
+        });
+
+        document.getElementById('form-achat').reset();
+        document.getElementById('achat-date').value = codeAujourdhui;
+        basculerTypeAchatInput(); recalculerTout();
+    }
+
+    function ajusterStockManuel(nom, direction) {
+        const ing = baseIngredients.find(i => i.nom === nom); if(!ing) return;
+        let step = (ing.classe === 'Emballage' || ing.type === 'U') ? 1 : 50;
+        stockGlobal[nom] = Math.max(0, (stockGlobal[nom] || 0) + (direction * step));
+        recalculerTout();
+    }
+
+    // RECETTES
+    function afficherRecetteProduit() {
+        const prod = document.getElementById('recette-produit-select').value;
+        const tbody = document.querySelector('#table-recette-composition tbody'); tbody.innerHTML = '';
+        if(!prod) return;
+        const compo = recettes[prod] || [];
+        compo.forEach((ingReq, idx) => {
+            const ingDef = baseIngredients.find(i => i.nom === ingReq.ingredient) || { type: 'U' };
+            tbody.innerHTML += `<tr><td>${ingReq.ingredient}</td><td><strong>${ingReq.qte} ${ingDef.type}</strong></td><td><button onclick="retirerIngRecette('${prod}', ${idx})" class="btn-small btn-del">Retirer</button></td></tr>`;
+        });
+    }
+
+    function ajouterIngredientRecette(e) {
+        e.preventDefault();
+        const prod = document.getElementById('recette-produit-select').value;
+        const ing = document.getElementById('recette-ing-nom').value;
+        const qte = parseInt(document.getElementById('recette-ing-qte').value);
+
+        if(!recettes[prod]) recettes[prod] = [];
+        let existant = recettes[prod].find(i => i.ingredient === ing);
+        if(existant) existant.qte += qte; else recettes[prod].push({ ingredient: ing, qte: qte });
+        recalculerTout(); afficherRecetteProduit();
+    }
+
+    function retirerIngRecette(prod, idx) { recettes[prod].splice(idx, 1); recalculerTout(); afficherRecetteProduit(); }
+    
+    function ajouterAuCatalogue(e) {
+        e.preventDefault();
+        const nom = document.getElementById('cat-nom').value.trim();
+        const prix = parseFloat(document.getElementById('cat-prix').value);
+        if(!catalogue.some(p => p.nom.toLowerCase() === nom.toLowerCase())) {
+            catalogue.push({ id: Date.now(), nom: nom, prix: prix }); recettes[nom] = [];
+            rafraichirTousLesSelects(); recalculerTout();
+        }
+        document.getElementById('form-catalogue').reset();
+    }
+
+    // LOGIQUE DE CALCULS ET HISTORIQUES
+    function recalculerTout() {
+        let ca = 0, depenses = 0, inv = 0, prod = 0, frais = 0;
+        ventes.forEach(v => ca += parseFloat(v.prix));
+        achats.forEach(a => {
+            let totalLigne = parseFloat(a.cout) * parseInt(a.quantite); depenses += totalLigne;
+            if(a.categorie === "Investissement") inv += totalLigne;
+            else if(a.categorie === "Coût Production") prod += totalLigne;
+            else frais += totalLigne;
+        });
+
+        document.getElementById('kpi-ca').innerText = ca.toFixed(2) + " €";
+        document.getElementById('kpi-depenses').innerText = depenses.toFixed(2) + " €";
+        document.getElementById('kpi-benefice').innerText = (ca - prod - frais).toFixed(2) + " €";
+
+        localStorage.setItem('achats_v9', JSON.stringify(achats));
+        localStorage.setItem('ventes_v9', JSON.stringify(ventes));
+        localStorage.setItem('catalogue_v9', JSON.stringify(catalogue));
+        localStorage.setItem('recettes_v9', JSON.stringify(recettes));
+        localStorage.setItem('stock_v9', JSON.stringify(stockGlobal));
+
+        majVisualBar(inv, prod, frais, depenses); majTablesVisuelles();
+    }
+
+    function majVisualBar(inv, prod, frais, total) {
+        document.getElementById('txt-inv').innerText = inv.toFixed(2) + " €";
+        document.getElementById('txt-prod').innerText = prod.toFixed(2) + " €";
+        document.getElementById('txt-frais').innerText = frais.toFixed(2) + " €";
+        if(total > 0) {
+            let pInv = ((inv / total) * 100).toFixed(0), pProd = ((prod / total) * 100).toFixed(0), pFrais = ((frais / total) * 100).toFixed(0);
+            document.getElementById('bar-inv').style.width = pInv + "%"; document.getElementById('bar-prod').style.width = pProd + "%"; document.getElementById('bar-frais').style.width = pFrais + "%";
+            document.getElementById('pct-inv').innerText = pInv + "%"; document.getElementById('pct-prod').innerText = pProd + "%"; document.getElementById('pct-frais').innerText = pFrais + "%";
+        } else {
+            document.querySelectorAll('.bar-seg').forEach(b => b.style.width = "0%");
+            document.getElementById('pct-inv').innerText = "0%"; document.getElementById('pct-prod').innerText = "0%"; document.getElementById('pct-frais').innerText = "0%";
+        }
+    }
+
+    // ÉDITION DES VENTES
+    function editerVenteRow(id) {
+        const v = ventes.find(v => v.id === id);
+        const tr = document.getElementById(`vente-${id}`);
+        tr.innerHTML = `
+            <td>
+                C: <input type="date" id="edit-v-date-${id}" value="${v.date}" style="padding:2px; font-size:11px; margin-bottom:2px;"><br>
+                L: <input type="date" id="edit-v-delivery-${id}" value="${v.dateLivraison || v.date}" style="padding:2px; font-size:11px;">
+            </td>
+            <td><input type="text" id="edit-v-client-${id}" value="${v.client}" style="padding:4px;"></td>
+            <td style="color:var(--text-muted); font-size:11px;">Modif. prix global direct ➔</td>
+            <td><input type="number" step="0.01" id="edit-v-prix-${id}" value="${v.prix}" style="padding:4px; width:70px;"></td>
+            <td>
+                <select id="edit-v-statut-${id}" style="padding:4px;">
+                    <option value="En cours" ${v.statut === 'En cours' ? 'selected' : ''}>En cours</option>
+                    <option value="Terminée" ${v.statut === 'Terminée' ? 'selected' : ''}>Terminée</option>
+                </select>
+            </td>
+            <td><button onclick="sauverVenteRow(${id})" class="btn-small btn-save">OK</button></td>
+        `;
+    }
+
+    function sauverVenteRow(id) {
+        const v = ventes.find(v => v.id === id);
+        v.date = document.getElementById(`edit-v-date-${id}`).value;
+        v.dateLivraison = document.getElementById(`edit-v-delivery-${id}`).value;
+        v.client = document.getElementById(`edit-v-client-${id}`).value;
+        v.prix = document.getElementById(`edit-v-prix-${id}`).value;
+        v.statut = document.getElementById(`edit-v-statut-${id}`).value;
+        recalculerTout();
+    }
+
+    function editerAchatRow(id) {
+        const a = achats.find(a => a.id === id); const tr = document.getElementById(`achat-${id}`); let inputProduitHtml = "";
+        if(a.categorie === "Coût Production") {
+            let options = baseIngredients.map(i => `<option value="${i.nom}" ${i.nom === a.produit ? 'selected' : ''}>${i.nom}</option>`).join('');
+            inputProduitHtml = `<select id="edit-a-prod-${id}" style="padding:4px;">${options}</select>`;
+        } else {
+            inputProduitHtml = `<input type="text" id="edit-a-prod-${id}" value="${a.produit}" style="padding:4px;">`;
+        }
+        tr.innerHTML = `
+            <td><input type="date" id="edit-a-date-${id}" value="${a.date}"></td>
+            <td>${inputProduitHtml} x <input type="number" style="width:40px; padding:4px;" id="edit-a-qty-${id}" value="${a.quantite}"></td>
+            <td><span class="badge" style="background-color:var(--text-muted);">${a.categorie}</span></td>
+            <td>P.U: <input type="number" step="0.01" style="width:60px; padding:4px;" id="edit-a-cout-${id}" value="${a.cout}"> €</td>
+            <td><button onclick="sauverAchatRow(${id})" class="btn-small btn-save">OK</button></td>
+        `;
+    }
+
+    function sauverAchatRow(id) {
+        const a = achats.find(a => a.id === id);
+        a.date = document.getElementById('edit-a-date-' + id).value; a.produit = document.getElementById('edit-a-prod-' + id).value;
+        a.quantite = parseInt(document.getElementById('edit-a-qty-' + id).value); a.cout = document.getElementById('edit-a-cout-' + id).value;
+        recalculerTout();
+    }
+
+    function supprimerAchat(id) { achats = achats.filter(a => a.id !== id); recalculerTout(); }
+    function supprimerVente(id) { ventes = ventes.filter(v => v.id !== id); recalculerTout(); }
+    function supprimerCatalogue(id) { const p = catalogue.find(c => c.id === id); if(p) { delete recettes[p.nom]; catalogue = catalogue.filter(c => c.id !== id); } rafraichirTousLesSelects(); recalculerTout(); }
+    function supprimerIngredientMaster(nom) { if(confirm(`Supprimer "${nom}" des masters ?`)) { baseIngredients = baseIngredients.filter(i => i.nom !== nom); delete stockGlobal[nom]; localStorage.setItem('base_ingredients_v9', JSON.stringify(baseIngredients)); rafraichirTousLesSelects(); recalculerTout(); } }
+
+    function majTablesVisuelles() {
+        const tbodyV = document.querySelector('#table-ventes tbody'); tbodyV.innerHTML = '';
+        ventes.slice().reverse().forEach(v => {
+            let descArticlesHtml = "";
+            if (v.articles && v.articles.length > 0) {
+                descArticlesHtml = v.articles.map(a => {
+                    let costVal = a.cout ? parseFloat(a.cout).toFixed(2) : "0.00";
+                    return `<div style="margin-bottom: 2px;">• ${a.produit} <span style="font-size:11px; color:var(--text-muted); font-weight:500;">(CR: ${costVal} €)</span></div>`;
+                }).join('');
+            } else {
+                descArticlesHtml = `<div>• ${v.produit}</div>`;
+            }
+
+            let dateLivraisonAffiche = v.dateLivraison ? formatFr(v.dateLivraison) : formatFr(v.date);
+            tbodyV.innerHTML += `
+                <tr id="vente-${v.id}">
+                    <td><span style="color:var(--text-muted); font-size:11px;">${formatFr(v.date)}</span><br><strong>➔ ${dateLivraisonAffiche}</strong></td>
+                    <td><strong>${v.client}</strong></td>
+                    <td>${descArticlesHtml}</td>
+                    <td><strong style="color:var(--success)">${parseFloat(v.prix).toFixed(2)} €</strong></td>
+                    <td><span class="badge" style="background-color:${v.statut === 'En cours' ? 'var(--accent)' : 'var(--text-muted)'}">${v.statut}</span></td>
+                    <td class="action-btns">
+                        <button onclick="editerVenteRow(${v.id})" class="btn-small btn-edit">Modifier</button>
+                        <button onclick="supprimerVente(${v.id})" class="btn-small btn-del">Supprimer</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        const tbodyA = document.querySelector('#table-achats tbody'); tbodyA.innerHTML = '';
+        achats.slice().reverse().forEach(a => {
+            let total = parseFloat(a.cout) * parseInt(a.quantite);
+            tbodyA.innerHTML += `
+                <tr id="achat-${a.id}">
+                    <td>${formatFr(a.date)}</td>
+                    <td><strong>${a.produit}</strong> <span style="color:var(--text-muted)">(x${a.quantite})</span></td>
+                    <td><span style="font-size:11px; color:white; background-color:var(--text-muted); padding:3px 6px; border-radius:4px;">${a.categorie}</span></td>
+                    <td><strong>${total.toFixed(2)} €</strong> <span style="font-size:11px; color:var(--text-muted)">(${parseFloat(a.cout).toFixed(2)}€/u)</span></td>
+                    <td class="action-btns">
+                        <button onclick="editerAchatRow(${a.id})" class="btn-small btn-edit">Modifier</button>
+                        <button onclick="supprimerAchat(${a.id})" class="btn-small btn-del">Supprimer</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        const tbodyC = document.querySelector('#table-catalogue tbody'); tbodyC.innerHTML = '';
+        catalogue.forEach(p => {
+            tbodyC.innerHTML += `<tr><td><strong>${p.nom}</strong></td><td>${p.prix.toFixed(2)} €</td><td><button onclick="supprimerCatalogue(${p.id})" class="btn-small btn-del">Supprimer</button></td></tr>`;
+        });
+
+        const tbodyIng = document.querySelector('#table-stock-ingredients tbody'); tbodyIng.innerHTML = '';
+        const tbodyEmb = document.querySelector('#table-stock-emballages tbody'); tbodyEmb.innerHTML = '';
+        let triIngredients = [...baseIngredients].sort((a,b) => a.nom.localeCompare(b.nom));
+
+        triIngredients.forEach(ing => {
+            let qte = stockGlobal[ing.nom] || 0;
+            if(ing.classe === "Emballage") {
+                tbodyEmb.innerHTML += `
+                    <tr>
+                        <td><strong>${ing.nom}</strong></td>
+                        <td style="font-size:14px; color:var(--accent);"><strong>${qte} U</strong></td>
+                        <td>
+                            <div class="stock-actions">
+                                <button onclick="ajusterStockManuel('${ing.nom}', 1)" class="btn-small btn-qty" style="background-color:var(--success)">+</button>
+                                <button onclick="ajusterStockManuel('${ing.nom}', -1)" class="btn-small btn-qty" style="background-color:var(--danger)">-</button>
+                            </div>
+                        </td>
+                        <td><button onclick="supprimerIngredientMaster('${ing.nom}')" class="btn-small btn-del">X</button></td>
+                    </tr>
+                `;
+            } else {
+                let paquetsEquiv = (qte / ing.taillePaquet).toFixed(1);
+                tbodyIng.innerHTML += `
+                    <tr>
+                        <td><strong>${ing.nom}</strong> <span style="color:var(--text-muted); font-size:11px;">(${ing.taillePaquet}${ing.type}/pqt)</span></td>
+                        <td><strong>${qte} ${ing.type}</strong></td>
+                        <td style="color:var(--accent); font-weight:600;">${paquetsEquiv} pqt(s)</td>
+                        <td>
+                            <div class="stock-actions">
+                                <button onclick="ajusterStockManuel('${ing.nom}', 1)" class="btn-small btn-qty" style="background-color:var(--success)">+</button>
+                                <button onclick="ajusterStockManuel('${ing.nom}', -1)" class="btn-small btn-qty" style="background-color:var(--danger)">-</button>
+                            </div>
+                        </td>
+                        <td><button onclick="supprimerIngredientMaster('${ing.nom}')" class="btn-small btn-del">X</button></td>
+                    </tr>
+                `;
+            }
+        });
+    }
+
+    function reinitialiserDonnees() { if(confirm("Ambrine, réinitialiser la v9 beige ?")) { localStorage.clear(); location.reload(); } }
+
+    rafraichirTousLesSelects();
+    recalculerTout();
+</script>
+</body>
+</html>
