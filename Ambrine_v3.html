@@ -20,6 +20,11 @@
 
         * { -webkit-tap-highlight-color: transparent; }
 
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
@@ -132,10 +137,30 @@
 
         .badge { padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; color: white; display: inline-block; }
 
-        @media (max-width: 640px) {
+        @media (max-width: 1024px) {
             body { padding: 12px; }
-            .card { padding: 15px; }
-            h1 { font-size: 20px; }
+            .card { padding: 13px; }
+            h1 { font-size: 19px; }
+            h2 { font-size: 14px; margin-bottom: 12px; }
+            h3 { font-size: 13px; }
+            label { font-size: 11px; }
+            .kpi-value { font-size: 17px; }
+            .kpi-label { font-size: 11px; }
+            .kpi-card { padding: 12px; }
+            /* Input font-size stays 16px on purpose (avoids iOS auto-zoom on focus) — only padding/height shrink */
+            input, select { padding: 7px 9px; min-height: 38px; }
+            button { padding: 8px 10px; min-height: 38px; font-size: 13px; }
+            .btn-small { padding: 6px 10px; min-height: 30px; font-size: 11px; }
+            .subsection { padding: 8px 10px; margin-bottom: 8px; }
+            .subsection-title { font-size: 10px; margin-bottom: 6px; }
+            .form-group { margin-bottom: 8px; }
+            .main-grid, .kpi-grid { gap: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .card { padding: 11px; }
+            h1 { font-size: 17px; }
         }
     </style>
 </head>
