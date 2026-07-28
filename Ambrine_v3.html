@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier Al Maida - Mode Beige v9</title>
+    <style>
+        :root {
+            --bg-color: #f9f8f6;       /* Crème très clair */
+            --card-bg: #ffffff;        
+            --text-color: #4a3f35;     /* Brun foncé */
+            --text-muted: #8c7e71;     /* Taupe */
+            --accent: #c4a482;         /* Beige chaud / Camel */
+            --accent-hover: #b08d6a;
+            --success: #a39581;        /* Brun grisé doux (remplace le vert) */
+            --danger: #c28d82;         /* Terracotta très sourd (remplace le rouge) */
+            --border: #e8e3dc;         /* Bordures beige clair */
+            --blue: #d4c4b4;           /* Sable (remplace le bleu) */
+        }
+
+        * { -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        h1 { margin: 0; font-size: 24px; font-weight: 600; color: var(--text-color); }
+        h2 { font-size: 16px; margin-top: 0; margin-bottom: 15px; color: var(--text-color); border-left: 3px solid var(--accent); padding-left: 8px; }
+        h3 { font-size: 14px; color: var(--text-muted); margin-top: 0; margin-bottom: 10px; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tab-btn {
+            background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; width: auto;
+            transition: all 0.2s; touch-action: manipulation; flex-shrink: 0;
+        }
+        .tab-btn.active { background-color: var(--accent); color: white; border-color: var(--accent); }
+        .tab-btn:hover:not(.active) { background-color: rgba(196, 164, 130, 0.1); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .kpi-card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .kpi-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-value { font-size: 20px; font-weight: 700; margin-top: 5px; }
+
+        .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+        input, select {
+            width: 100%; padding: 11px 10px; background-color: var(--card-bg);
+            border: 1px solid var(--border); border-radius: 6px; color: var(--text-color);
+            box-sizing: border-box; font-size: 16px; min-height: 44px;
+        }
+        input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px rgba(196, 164, 130, 0.15); }
+
+        button {
+            width: 100%; padding: 13px 11px; background-color: var(--accent); border: none;
+            border-radius: 6px; color: #fff; font-weight: 600; cursor: pointer; font-size: 15px;
+            transition: background 0.2s; touch-action: manipulation; min-height: 44px;
+        }
+        button:hover { background-color: var(--accent-hover); }
+        button:active { background-color: var(--accent-hover); transform: scale(0.99); }
+
+        .table-container { max-height: 320px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; border: 1px solid var(--border); border-radius: 6px; }
+        table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 13px; text-align: left; background-color: var(--card-bg); }
+        th { padding: 12px 10px; color: var(--text-muted); background-color: var(--bg-color); border-bottom: 2px solid var(--border); font-weight: 600; white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+        td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
+        tr:nth-child(even) { background-color: rgba(196, 164, 130, 0.04); }
+        tr:hover { background-color: var(--bg-color); }
+
+        .action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-small { width: auto; padding: 8px 12px; font-size: 12px; font-weight: 500; border-radius: 4px; min-height: 34px; touch-action: manipulation; }
+        .btn-edit { background-color: var(--text-muted); color: white; }
+        .btn-del { background-color: var(--danger); color: white; }
+        .btn-save { background-color: var(--success); color: white; }
+
+        .panier-box {
+            background-color: var(--bg-color); border: 1px dashed var(--accent);
+            border-radius: 6px; padding: 10px; margin-top: 10px; margin-bottom: 15px;
+        }
+
+        .visual-bar-container {
+            background-color: var(--border); height: 25px; border-radius: 6px;
+            overflow: hidden; display: flex; margin: 20px 0; border: 1px solid var(--border);
+        }
+        .bar-seg { height: 100%; transition: width 0.3s ease; }
+        .bar-seg.inv { background-color: var(--blue); }
+        .bar-seg.prod { background-color: var(--success); }
+        .bar-seg.frais { background-color: var(--danger); }
+
+        .legend-list { font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .dot.inv { background-color: var(--blue); }
+        .dot.prod { background-color: var(--success); }
+        .dot.frais { background-color: var(--danger); }
+
+        .info-conversion { font-size: 11px; color: var(--accent); margin-top: 4px; display: block; font-weight: 500; }
+        .clear-btn { background-color: transparent; border: 1px solid var(--danger); color: var(--danger); width: auto; padding: 8px 14px; font-size: 12px; min-height: 38px; }
+        .clear-btn:hover { background-color: rgba(194, 141, 130, 0.1); }
+
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; color: white; display: inline-block; }
+
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            .card { padding: 15px; }
+            h1 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Atelier Al Maida</h1>
+        <button class="clear-btn" onclick="reinitialiserDonnees()">Tout effacer</button>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('page-ops', event)">Opérations (Ventes & Achats)</button>
+        <button class="tab-btn" onclick="switchTab('page-stocks', event)">Recettes & Ingrédients</button>
+    </div>
+
+    <!-- PAGE 1 : OPERATIONS -->
+    <div id="page-ops" class="tab-content active">
+        <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-label">Chiffre d'Affaires</div><div class="kpi-value" id="kpi-ca" style="color: var(--success);">0,00 €</div></div>
+            <div class="kpi-card"><div class="kpi-label">Dépenses Totales</div><div class="kpi-value" id="kpi-depenses" style="color:var(--danger)">0,00 €</div></div>
+            <div class="kpi-card"><div class="kpi-label">Bénéfice Net (hors investissements)</div><div class="kpi-value" id="kpi-benefice" style="color: var(--text-color);">0,00 €</div></div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Formulaire Achat -->
+            <div class="card">
+                <h2>+ Enregistrer un Achat</h2>
+                <form id="form-achat" onsubmit="ajouterAchat(event)">
+                    <div class="form-group"><label>Date de l'achat</label><input type="date" id="achat-date" required></div>
+                    <div class="form-group">
+                        <label>Catégorie de dépense</label>
+                        <select id="achat-categorie" onchange="basculerTypeAchatInput()">
+                            <option value="Coût Production">Coût de Production (Ingrédients, Boîtes...)</option>
+                            <option value="Investissement">Investissement (Matériel labo...)</option>
+                            <option value="Frais Divers">Charges / Frais Divers</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="group-achat-select">
+                        <label>Sélectionner l'ingrédient / article</label>
+                        <select id="achat-produit" onchange="majInfoLabeAchats()"></select>
+                        <span id="achat-info-taille" class="info-conversion"></span>
+                    </div>
+
+                    <div class="form-group" id="group-achat-libre" style="display: none;">
+                        <label>Nom de la dépense (Saisie manuelle)</label>
+                        <input type="text" id="achat-produit-libre" placeholder="Ex: Robot pâtissier, Pub, Ustensiles">
+                    </div>
+
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label id="label-achat-qte">Nombre de paquets</label><input type="number" id="achat-quantite" value="1" min="1" required></div>
+                        <div><label>Coût unitaire (€)</label><input type="number" step="0.01" id="achat-cout" placeholder="0.00" min="0" required></div>
+                    </div>
+                    <button type="submit">Enregistrer l'achat</button>
+                </form>
+            </div>
+
+            <!-- Formulaire Vente -->
+            <div class="card">
+                <h2>+ Enregistrer une Vente</h2>
+                <div id="edit-mode-banner" style="display:none; background: var(--blue); color: var(--text-color); padding:10px 12px; border-radius:6px; margin-bottom:12px; font-size:13px; align-items:center; justify-content:space-between; gap:10px;">
+                    <span id="edit-mode-text" style="font-weight:600;"></span>
+                    <button type="button" onclick="annulerModificationVente()" style="width:auto; background:var(--text-muted); padding:6px 12px; font-size:12px; min-height:auto;">Annuler</button>
+                </div>
+                <form id="form-vente-config">
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label>Date de commande</label><input type="date" id="vente-date" required></div>
+                        <div><label>Date de livraison souhaitée</label><input type="date" id="vente-date-livraison" required></div>
+                    </div>
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label>Client / Événement</label><input type="text" id="vente-client" placeholder="Nom de la cliente" required></div>
+                        <div>
+                            <label>Statut initial</label>
+                            <select id="vente-statut">
+                                <option value="En cours">En cours</option>
+                                <option value="Terminée">Terminée</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--bg-color); border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                        <label>Sélectionner un produit :</label>
+                        <select id="vente-produit" onchange="appliquerPrixParDefaut()" style="margin-bottom:8px;"></select>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:8px;">
+                            <div><label>Prix unitaire appliqué (€)</label><input type="number" step="0.01" id="vente-prix" min="0" oninput="majApercuMargeVente()"></div>
+                            <div><label>Quantité</label><input type="number" id="vente-produit-qte" value="1" min="1" oninput="majApercuMargeVente()"></div>
+                        </div>
+                        <div id="apercu-marge-vente" style="font-size:12px; color:var(--text-muted); margin-bottom:8px;"></div>
+                        <button type="button" onclick="ajouterAuPanierTemporaire()" style="background-color: var(--blue); color: var(--text-color); padding: 7px; font-size:12px;">+ Ajouter à cette commande</button>
+                    </div>
+
+                    <div style="background: var(--bg-color); border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                        <label>Emballage utilisé (optionnel) :</label>
+                        <select id="vente-emballage" style="margin-bottom:8px;"><option value="">— Aucun —</option></select>
+                        <label>Quantité</label>
+                        <input type="number" id="vente-emballage-qte" value="1" min="1" style="margin-bottom:8px;">
+                        <button type="button" onclick="ajouterEmballageAuPanier()" style="background-color: var(--blue); color: var(--text-color); padding: 7px; font-size:12px;">+ Ajouter cet emballage</button>
+                    </div>
+
+                    <label>Contenu de la commande :</label>
+                    <div class="panier-box" id="liste-panier-encours">
+                        <span style="color:var(--text-muted); font-size:12px;">Aucun produit sélectionné.</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Promo / Réduction sur cette commande (%)</label>
+                        <input type="number" step="1" id="vente-promo" value="0" min="0" max="100" oninput="majRenduPanierVisuel()">
+                    </div>
+                    <div style="margin-bottom:4px; font-size:13px; text-align:right; color:var(--text-muted);">Sous-total : <span id="sous-total-panier-txt">0.00 €</span></div>
+                    <div style="margin-bottom:12px; font-size:14px; text-align:right;">Total Commande (après promo) : <strong id="total-panier-txt" style="color:var(--text-color)">0.00 €</strong></div>
+
+                    <button type="button" id="btn-valider-commande" onclick="validerTouteLaCommande(event)">Enregistrer la commande globale</button>
+                </form>
+            </div>
+
+            <!-- Répartition Visuelle -->
+            <div class="card">
+                <h2>Répartition Visuelle des Dépenses</h2>
+                <div class="visual-bar-container">
+                    <div id="bar-inv" class="bar-seg inv" style="width: 0%"></div>
+                    <div id="bar-prod" class="bar-seg prod" style="width: 0%"></div>
+                    <div id="bar-frais" class="bar-seg frais" style="width: 0%"></div>
+                </div>
+                <div class="legend-list">
+                    <div class="legend-item"><span class="dot inv"></span> <span>Investissements : <strong id="txt-inv">0.00 €</strong> (<span id="pct-inv">0%</span>)</span></div>
+                    <div class="legend-item"><span class="dot prod"></span> <span>Coûts de Production : <strong id="txt-prod">0.00 €</strong> (<span id="pct-prod">0%</span>)</span></div>
+                    <div class="legend-item"><span class="dot frais"></span> <span>Charges / Frais Divers : <strong id="txt-frais">0.00 €</strong> (<span id="pct-frais">0%</span>)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historiques -->
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>Historique des Ventes & Commandes</h2>
+            <div class="table-container">
+                <table id="table-ventes">
+                    <thead><tr><th>Dates (Saisie ➔ Livraison)</th><th>Cliente / Événement</th><th>Articles</th><th>Coût de revient</th><th>Total payé</th><th>Marge</th><th>Statut</th><th>Actions</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Historique des Achats & Approvisionnements</h2>
+            <div class="table-container">
+                <table id="table-achats">
+                    <thead><tr><th>Date</th><th>Élément</th><th>Catégorie</th><th>Coût Total</th><th>Actions</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 : RECETTES & INGRÉDIENTS -->
+    <div id="page-stocks" class="tab-content">
+        <div class="main-grid">
+            <!-- Catalogue et Création Recettes -->
+            <div class="card">
+                <h2>1. Catalogue des Ventes</h2>
+                <form id="form-catalogue" onsubmit="ajouterAuCatalogue(event)">
+                    <div class="form-group"><label>Nom du Produit (ex: Boîte de 25 Brownies)</label><input type="text" id="cat-nom" required></div>
+                    <div class="form-group"><label>Prix de vente de base (€)</label><input type="number" step="0.01" id="cat-prix" value="35.00" min="0" required></div>
+                    <button type="submit">Ajouter au catalogue</button>
+                </form>
+                <div class="table-container" style="max-height: 320px; margin-bottom: 20px;">
+                    <table id="table-catalogue"><thead><tr><th>Produit</th><th>Coût de revient</th><th>Prix Base</th><th>Marge</th><th>Action</th></tr></thead><tbody></tbody></table>
+                </div>
+
+                <h2>2. Configuration de la Recette</h2>
+                <div class="form-group">
+                    <label>Sélectionner le produit fini</label>
+                    <select id="recette-produit-select" onchange="afficherRecetteProduit()"></select>
+                </div>
+                <form id="form-recette-ing" onsubmit="ajouterIngredientRecette(event)" style="display:grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: end;">
+                    <div class="form-group" style="margin:0;">
+                        <label>Sélectionner l'article</label>
+                        <select id="recette-ing-nom" onchange="majUnitetLabelRecette()"></select>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label id="label-recette-qte">Quantité</label>
+                        <input type="number" id="recette-ing-qte" value="10" min="0.001" step="any" required>
+                    </div>
+                    <button type="submit" style="padding:8px 12px;">+</button>
+                </form>
+                <div class="table-container" style="max-height: 180px; margin-top:15px;">
+                    <table id="table-recette-composition"><thead><tr><th>Article requis</th><th>Quantité cible</th><th>Action</th></tr></thead><tbody></tbody></table>
+                </div>
+            </div>
+
+            <!-- Ingrédients -->
+            <div class="card">
+                <h2>3. Ajouter un Nouvel Ingrédient / Emballage</h2>
+                <form id="form-nouvel-ing" onsubmit="creerNouvelIngredient(event)">
+                    <div class="form-group"><label>Nom de l'élément</label><input type="text" id="new-ing-nom" placeholder="Ex: Lben, Farine T55, Rubans" required></div>
+                    <div class="form-group">
+                        <label>Nature de l'article</label>
+                        <select id="new-ing-classe" onchange="toggleFormTypeEmballage()">
+                            <option value="Ingrédient">Ingrédient (Alimentaire - poids/volume)</option>
+                            <option value="Emballage">Emballage (Boîtes, piques - unité brute)</option>
+                        </select>
+                    </div>
+                    <div id="div-mesures-conditionnement" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:12px;">
+                        <div>
+                            <label>Type de Mesure</label>
+                            <select id="new-ing-type" onchange="majExempleConversion()">
+                                <option value="g">Poids (Grammes - g)</option>
+                                <option value="ml">Volume (Millilitres - ml)</option>
+                                <option value="U">Unité (Pièces - U)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Taille d'un paquet acheté</label>
+                            <input type="number" id="new-ing-taille" value="250" min="1">
+                        </div>
+                    </div>
+                    <span id="lbl-exemple-conv" style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:10px;">Exemple : 1 paquet = 250g</span>
+                    <button type="submit">Créer l'article master</button>
+                </form>
+
+                <h2 style="margin-top: 35px;">Liste des ingrédients & emballages</h2>
+                <div class="table-container" style="max-height: 300px;">
+                    <table id="table-ingredients">
+                        <thead><tr><th>Nom</th><th>Conditionnement</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Emballages de commande -->
+            <div class="card">
+                <h2>4. Emballages de Commande</h2>
+                <p style="font-size:12px; color:var(--text-muted); margin-top:-8px; margin-bottom:12px;">Boîtes/contenants à choisir au moment de valider une commande (page Opérations).</p>
+                <form id="form-emballage" onsubmit="ajouterEmballage(event)">
+                    <div class="form-group"><label>Nom de l'emballage</label><input type="text" id="emb-nom" placeholder="Ex: Boîte kraft moyenne" required></div>
+                    <div class="form-group"><label>Prix unitaire (€)</label><input type="number" step="0.01" id="emb-prix" min="0" placeholder="0.00" required></div>
+                    <button type="submit">Ajouter l'emballage</button>
+                </form>
+                <div class="table-container" style="max-height: 220px; margin-top:15px;">
+                    <table id="table-emballages">
+                        <thead><tr><th>Nom</th><th>Prix</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Configuration Base de Données Globale
+    const dateSeed = new Date().toISOString().split('T')[0];
+
+    let baseIngredients = JSON.parse(localStorage.getItem('base_ingredients_v9')) || [
+        { nom: "Farine", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Sucre", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Levure boulangère", type: "g", taillePaquet: 30, classe: "Ingrédient" },
+        { nom: "Lait en poudre", type: "g", taillePaquet: 300, classe: "Ingrédient" },
+        { nom: "Colorant en poudre", type: "g", taillePaquet: 4, classe: "Ingrédient" },
+        { nom: "Graine de sésame blanche", type: "g", taillePaquet: 100, classe: "Ingrédient" },
+        { nom: "Graine de sésame noir", type: "g", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Graine de pavot", type: "g", taillePaquet: 250, classe: "Ingrédient" },
+        { nom: "Huile d'olive", type: "ml", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Oeufs", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Courgettes", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Pesto rosso", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Mozzarella", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Poivrons grillés (bocal)", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Papier sulfurisé", type: "U", taillePaquet: 30, classe: "Emballage" },
+        { nom: "Viande hachée", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Cheddar tranché (Kraft)", type: "U", taillePaquet: 8, classe: "Ingrédient" },
+        { nom: "Mini pique", type: "U", taillePaquet: 1000, classe: "Emballage" },
+        { nom: "Salade", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Sauce burger", type: "g", taillePaquet: 260, classe: "Ingrédient" },
+        { nom: "Cornichons", type: "g", taillePaquet: 185, classe: "Ingrédient" },
+        { nom: "Fromage frais", type: "g", taillePaquet: 300, classe: "Ingrédient" },
+        { nom: "Mini concombre (tranches)", type: "U", taillePaquet: 12, classe: "Ingrédient" },
+        { nom: "Saumon", type: "g", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Escalopes de poulet", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Barquette", type: "U", taillePaquet: 50, classe: "Emballage" },
+        { nom: "Sriracha mayo", type: "ml", taillePaquet: 215, classe: "Ingrédient" },
+        { nom: "Sauce aigre douce", type: "g", taillePaquet: 300, classe: "Ingrédient" },
+        { nom: "Mayonnaise", type: "g", taillePaquet: 235, classe: "Ingrédient" },
+        { nom: "Lamelle de citron vert", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Fleur comestible", type: "U", taillePaquet: 10, classe: "Ingrédient" },
+        { nom: "Palets bretons", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Mascarpone", type: "g", taillePaquet: 500, classe: "Ingrédient" },
+        { nom: "Crème liquide", type: "ml", taillePaquet: 400, classe: "Ingrédient" },
+        { nom: "Sucre glace", type: "g", taillePaquet: 500, classe: "Ingrédient" },
+        { nom: "Fruits rouges (coulis)", type: "g", taillePaquet: 750, classe: "Ingrédient" },
+        { nom: "Contenant verrine", type: "U", taillePaquet: 45, classe: "Emballage" },
+        { nom: "Fromage blanc", type: "g", taillePaquet: 500, classe: "Ingrédient" },
+        { nom: "Huile de tournesol", type: "ml", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Beurre", type: "g", taillePaquet: 250, classe: "Ingrédient" },
+        { nom: "Sauce sriracha (nature)", type: "g", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Sirop d'agave", type: "g", taillePaquet: 350, classe: "Ingrédient" },
+        { nom: "Pickles d'oignons", type: "g", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Sel", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Moutarde", type: "g", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Ketchup", type: "g", taillePaquet: 560, classe: "Ingrédient" },
+        { nom: "Tortilla de blé", type: "U", taillePaquet: 6, classe: "Ingrédient" },
+        { nom: "Ficelle cuisine", type: "U", taillePaquet: 1, classe: "Emballage" },
+        { nom: "Fond de tartelette 3.8cm", type: "U", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Chèvre frais", type: "g", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Noix (cerneaux)", type: "g", taillePaquet: 125, classe: "Ingrédient" },
+        { nom: "Oignon", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Avocat", type: "U", taillePaquet: 1, classe: "Ingrédient" },
+        { nom: "Crème légère", type: "g", taillePaquet: 200, classe: "Ingrédient" },
+        { nom: "Jus de citron", type: "ml", taillePaquet: 250, classe: "Ingrédient" },
+        { nom: "Crevettes", type: "g", taillePaquet: 1000, classe: "Ingrédient" }
+    ];
+
+    let achats = JSON.parse(localStorage.getItem('achats_v9')) || [
+        { id: 1, date: dateSeed, produit: "Farine", quantite: 1, cout: 0.65, categorie: "Coût Production" },
+        { id: 2, date: dateSeed, produit: "Sucre", quantite: 1, cout: 0.79, categorie: "Coût Production" },
+        { id: 3, date: dateSeed, produit: "Levure boulangère", quantite: 1, cout: 0.69, categorie: "Coût Production" },
+        { id: 4, date: dateSeed, produit: "Lait en poudre", quantite: 1, cout: 3.16, categorie: "Coût Production" },
+        { id: 5, date: dateSeed, produit: "Colorant en poudre", quantite: 1, cout: 3.75, categorie: "Coût Production" },
+        { id: 6, date: dateSeed, produit: "Graine de sésame blanche", quantite: 1, cout: 1.70, categorie: "Coût Production" },
+        { id: 7, date: dateSeed, produit: "Graine de sésame noir", quantite: 1, cout: 2.00, categorie: "Coût Production" },
+        { id: 8, date: dateSeed, produit: "Graine de pavot", quantite: 1, cout: 3.35, categorie: "Coût Production" },
+        { id: 9, date: dateSeed, produit: "Huile d'olive", quantite: 1, cout: 8.00, categorie: "Coût Production" },
+        { id: 10, date: dateSeed, produit: "Oeufs", quantite: 1, cout: 0.22, categorie: "Coût Production" },
+        { id: 11, date: dateSeed, produit: "Courgettes", quantite: 1, cout: 0.50, categorie: "Coût Production" },
+        { id: 12, date: dateSeed, produit: "Pesto rosso", quantite: 1, cout: 2.09, categorie: "Coût Production" },
+        { id: 13, date: dateSeed, produit: "Mozzarella", quantite: 1, cout: 0.93, categorie: "Coût Production" },
+        { id: 14, date: dateSeed, produit: "Poivrons grillés (bocal)", quantite: 1, cout: 1.90, categorie: "Coût Production" },
+        { id: 15, date: dateSeed, produit: "Papier sulfurisé", quantite: 1, cout: 1.00, categorie: "Coût Production" },
+        { id: 16, date: dateSeed, produit: "Viande hachée", quantite: 1, cout: 12.00, categorie: "Coût Production" },
+        { id: 17, date: dateSeed, produit: "Cheddar tranché (Kraft)", quantite: 1, cout: 2.59, categorie: "Coût Production" },
+        { id: 18, date: dateSeed, produit: "Mini pique", quantite: 1, cout: 1.75, categorie: "Coût Production" },
+        { id: 19, date: dateSeed, produit: "Salade", quantite: 1, cout: 1.30, categorie: "Coût Production" },
+        { id: 20, date: dateSeed, produit: "Sauce burger", quantite: 1, cout: 1.39, categorie: "Coût Production" },
+        { id: 21, date: dateSeed, produit: "Cornichons", quantite: 1, cout: 0.95, categorie: "Coût Production" },
+        { id: 22, date: dateSeed, produit: "Fromage frais", quantite: 1, cout: 1.79, categorie: "Coût Production" },
+        { id: 23, date: dateSeed, produit: "Mini concombre (tranches)", quantite: 1, cout: 1.79, categorie: "Coût Production" },
+        { id: 24, date: dateSeed, produit: "Saumon", quantite: 1, cout: 4.49, categorie: "Coût Production" },
+        { id: 25, date: dateSeed, produit: "Escalopes de poulet", quantite: 1, cout: 8.85, categorie: "Coût Production" },
+        { id: 26, date: dateSeed, produit: "Barquette", quantite: 1, cout: 2.80, categorie: "Coût Production" },
+        { id: 27, date: dateSeed, produit: "Sriracha mayo", quantite: 1, cout: 3.60, categorie: "Coût Production" },
+        { id: 28, date: dateSeed, produit: "Sauce aigre douce", quantite: 1, cout: 1.60, categorie: "Coût Production" },
+        { id: 29, date: dateSeed, produit: "Mayonnaise", quantite: 1, cout: 1.38, categorie: "Coût Production" },
+        { id: 30, date: dateSeed, produit: "Lamelle de citron vert", quantite: 1, cout: 0.40, categorie: "Coût Production" },
+        { id: 31, date: dateSeed, produit: "Fleur comestible", quantite: 1, cout: 2.99, categorie: "Coût Production" },
+        { id: 32, date: dateSeed, produit: "Palets bretons", quantite: 1, cout: 0.95, categorie: "Coût Production" },
+        { id: 33, date: dateSeed, produit: "Mascarpone", quantite: 1, cout: 3.20, categorie: "Coût Production" },
+        { id: 34, date: dateSeed, produit: "Crème liquide", quantite: 1, cout: 1.70, categorie: "Coût Production" },
+        { id: 35, date: dateSeed, produit: "Sucre glace", quantite: 1, cout: 1.21, categorie: "Coût Production" },
+        { id: 36, date: dateSeed, produit: "Fruits rouges (coulis)", quantite: 1, cout: 4.89, categorie: "Coût Production" },
+        { id: 37, date: dateSeed, produit: "Contenant verrine", quantite: 1, cout: 4.32, categorie: "Coût Production" },
+        { id: 38, date: dateSeed, produit: "Fromage blanc", quantite: 1, cout: 1.20, categorie: "Coût Production" },
+        { id: 39, date: dateSeed, produit: "Huile de tournesol", quantite: 1, cout: 1.80, categorie: "Coût Production" },
+        { id: 40, date: dateSeed, produit: "Beurre", quantite: 1, cout: 1.80, categorie: "Coût Production" },
+        { id: 41, date: dateSeed, produit: "Sauce sriracha (nature)", quantite: 1, cout: 3.50, categorie: "Coût Production" },
+        { id: 42, date: dateSeed, produit: "Sirop d'agave", quantite: 1, cout: 4.50, categorie: "Coût Production" },
+        { id: 43, date: dateSeed, produit: "Pickles d'oignons", quantite: 1, cout: 2.50, categorie: "Coût Production" },
+        { id: 44, date: dateSeed, produit: "Sel", quantite: 1, cout: 0.80, categorie: "Coût Production" },
+        { id: 45, date: dateSeed, produit: "Moutarde", quantite: 1, cout: 1.70, categorie: "Coût Production" },
+        { id: 46, date: dateSeed, produit: "Ketchup", quantite: 1, cout: 0.85, categorie: "Coût Production" },
+        { id: 47, date: dateSeed, produit: "Tortilla de blé", quantite: 1, cout: 1.95, categorie: "Coût Production" },
+        { id: 48, date: dateSeed, produit: "Ficelle cuisine", quantite: 1, cout: 2.50, categorie: "Coût Production" },
+        { id: 49, date: dateSeed, produit: "Fond de tartelette 3.8cm", quantite: 1, cout: 47.50, categorie: "Coût Production" },
+        { id: 50, date: dateSeed, produit: "Chèvre frais", quantite: 1, cout: 1.89, categorie: "Coût Production" },
+        { id: 51, date: dateSeed, produit: "Noix (cerneaux)", quantite: 1, cout: 1.86, categorie: "Coût Production" },
+        { id: 52, date: dateSeed, produit: "Oignon", quantite: 1, cout: 2.00, categorie: "Coût Production" },
+        { id: 53, date: dateSeed, produit: "Avocat", quantite: 1, cout: 1.00, categorie: "Coût Production" },
+        { id: 54, date: dateSeed, produit: "Crème légère", quantite: 1, cout: 1.20, categorie: "Coût Production" },
+        { id: 55, date: dateSeed, produit: "Jus de citron", quantite: 1, cout: 1.50, categorie: "Coût Production" },
+        { id: 56, date: dateSeed, produit: "Crevettes", quantite: 1, cout: 25.00, categorie: "Coût Production" }
+    ];
+    let ventes = JSON.parse(localStorage.getItem('ventes_v9')) || [];
+    let catalogue = JSON.parse(localStorage.getItem('catalogue_v9')) || [
+        { id: 1, nom: "Mini Focaccia", prix: 1.80 },
+        { id: 2, nom: "Mini Burger", prix: 1.40 },
+        { id: 3, nom: "Navette Saumon", prix: 1.80 },
+        { id: 4, nom: "Dynamite Chicken", prix: 1.50 },
+        { id: 5, nom: "Verrines Framboise", prix: 1.40 },
+        { id: 6, nom: "Nashville Chicken", prix: 1.40 },
+        { id: 7, nom: "Mini Wrap Poulet", prix: 1.60 },
+        { id: 8, nom: "Tartelette Chèvre Noix Oignons", prix: 1.50 },
+        { id: 9, nom: "Verrines Crevettes", prix: 1.60 },
+        { id: 10, nom: "Verrines Saumon", prix: 1.70 }
+    ];
+    let recettes = JSON.parse(localStorage.getItem('recettes_v9')) || {
+        "Mini Focaccia": [
+            { ingredient: "Farine", qte: 25 },
+            { ingredient: "Levure boulangère", qte: 0.4 },
+            { ingredient: "Huile d'olive", qte: 0.75 },
+            { ingredient: "Sucre", qte: 0.75 },
+            { ingredient: "Pesto rosso", qte: 0.0375 },
+            { ingredient: "Mozzarella", qte: 0.15 },
+            { ingredient: "Courgettes", qte: 0.1 },
+            { ingredient: "Poivrons grillés (bocal)", qte: 0.0167 },
+            { ingredient: "Papier sulfurisé", qte: 0.2 }
+        ],
+        "Mini Burger": [
+            { ingredient: "Farine", qte: 8.333 },
+            { ingredient: "Levure boulangère", qte: 0.1667 },
+            { ingredient: "Sucre", qte: 0.25 },
+            { ingredient: "Lait en poudre", qte: 0.1667 },
+            { ingredient: "Colorant en poudre", qte: 0.05 },
+            { ingredient: "Graine de sésame blanche", qte: 1.667 },
+            { ingredient: "Mini pique", qte: 1 },
+            { ingredient: "Viande hachée", qte: 16.667 },
+            { ingredient: "Cheddar tranché (Kraft)", qte: 0.1667 },
+            { ingredient: "Sauce burger", qte: 4.333 },
+            { ingredient: "Cornichons", qte: 4 }
+        ],
+        "Navette Saumon": [
+            { ingredient: "Farine", qte: 16.667 },
+            { ingredient: "Levure boulangère", qte: 0.3333 },
+            { ingredient: "Sucre", qte: 0.5 },
+            { ingredient: "Lait en poudre", qte: 1 },
+            { ingredient: "Graine de pavot", qte: 0.6667 },
+            { ingredient: "Oeufs", qte: 0.1333 },
+            { ingredient: "Fromage frais", qte: 6.667 },
+            { ingredient: "Mini concombre (tranches)", qte: 3 },
+            { ingredient: "Saumon", qte: 8.333 }
+        ],
+        "Dynamite Chicken": [
+            { ingredient: "Escalopes de poulet", qte: 22.5 },
+            { ingredient: "Barquette", qte: 1 },
+            { ingredient: "Sriracha mayo", qte: 1.5 },
+            { ingredient: "Sauce aigre douce", qte: 1.5 },
+            { ingredient: "Mayonnaise", qte: 1.5 },
+            { ingredient: "Graine de sésame noir", qte: 0.75 },
+            { ingredient: "Lamelle de citron vert", qte: 0.5 },
+            { ingredient: "Fleur comestible", qte: 0.15 }
+        ],
+        "Verrines Framboise": [
+            { ingredient: "Palets bretons", qte: 0.0833 },
+            { ingredient: "Mascarpone", qte: 35.714 },
+            { ingredient: "Crème liquide", qte: 14.286 },
+            { ingredient: "Sucre glace", qte: 11.429 },
+            { ingredient: "Fruits rouges (coulis)", qte: 20 },
+            { ingredient: "Contenant verrine", qte: 1 }
+        ],
+        "Nashville Chicken": [
+            { ingredient: "Escalopes de poulet", qte: 12.667 },
+            { ingredient: "Fromage blanc", qte: 3.333 },
+            { ingredient: "Farine", qte: 66.667 },
+            { ingredient: "Huile de tournesol", qte: 1.667 },
+            { ingredient: "Beurre", qte: 9.333 },
+            { ingredient: "Sauce sriracha (nature)", qte: 0.6667 },
+            { ingredient: "Sirop d'agave", qte: 0.3333 },
+            { ingredient: "Pickles d'oignons", qte: 1.667 },
+            { ingredient: "Levure boulangère", qte: 1.2 },
+            { ingredient: "Lait en poudre", qte: 3.6 },
+            { ingredient: "Sucre", qte: 4.8 },
+            { ingredient: "Sel", qte: 1.2 },
+            { ingredient: "Mayonnaise", qte: 5 },
+            { ingredient: "Moutarde", qte: 0.1667 }
+        ],
+        "Mini Wrap Poulet": [
+            { ingredient: "Escalopes de poulet", qte: 42.833 },
+            { ingredient: "Oeufs", qte: 0.0833 },
+            { ingredient: "Tortilla de blé", qte: 0.25 },
+            { ingredient: "Cheddar tranché (Kraft)", qte: 0.1667 },
+            { ingredient: "Salade", qte: 0.05 },
+            { ingredient: "Mayonnaise", qte: 5 },
+            { ingredient: "Ketchup", qte: 5 },
+            { ingredient: "Farine", qte: 15 },
+            { ingredient: "Huile de tournesol", qte: 10 },
+            { ingredient: "Papier sulfurisé", qte: 0.25 },
+            { ingredient: "Ficelle cuisine", qte: 0.01 }
+        ],
+        "Tartelette Chèvre Noix Oignons": [
+            { ingredient: "Fond de tartelette 3.8cm", qte: 1 },
+            { ingredient: "Chèvre frais", qte: 8 },
+            { ingredient: "Noix (cerneaux)", qte: 2 },
+            { ingredient: "Oignon", qte: 5 }
+        ],
+        "Verrines Crevettes": [
+            { ingredient: "Avocat", qte: 0.1538 },
+            { ingredient: "Crème légère", qte: 1.154 },
+            { ingredient: "Jus de citron", qte: 1.154 },
+            { ingredient: "Fromage frais", qte: 30.769 },
+            { ingredient: "Crevettes", qte: 20 },
+            { ingredient: "Contenant verrine", qte: 1 }
+        ],
+        "Verrines Saumon": [
+            { ingredient: "Avocat", qte: 0.1538 },
+            { ingredient: "Crème légère", qte: 1.154 },
+            { ingredient: "Jus de citron", qte: 1.154 },
+            { ingredient: "Fromage frais", qte: 30.769 },
+            { ingredient: "Saumon", qte: 20 },
+            { ingredient: "Contenant verrine", qte: 1 }
+        ]
+    };
+    let emballages = JSON.parse(localStorage.getItem('emballages_v9')) || [
+        { id: 1, nom: "Bouquet gypsophile (déco)", prix: 3.90 },
+        { id: 2, nom: "Supplément Rafaello", prix: 0.30 },
+        { id: 3, nom: "Supplément Framboise/Myrtilles", prix: 0.30 },
+        { id: 4, nom: "Supplément Praliné", prix: 0.20 },
+        { id: 5, nom: "Supplément Cacahuète", prix: 0.15 }
+    ];
+    let panierTemporaire = [];
+
+    const codeAujourdhui = dateSeed;
+    document.getElementById('achat-date').value = codeAujourdhui;
+    document.getElementById('vente-date').value = codeAujourdhui;
+    document.getElementById('vente-date-livraison').value = codeAujourdhui;
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function formatQte(n) {
+        return parseFloat(n.toFixed(4)).toString();
+    }
+
+    function formatFr(dateIso) {
+        if(!dateIso) return "-";
+        const p = dateIso.split('-');
+        return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : dateIso;
+    }
+
+    function switchTab(tabId, evt) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    function toggleFormTypeEmballage() {
+        const classe = document.getElementById('new-ing-classe').value;
+        document.getElementById('div-mesures-conditionnement').style.display = (classe === "Emballage") ? "none" : "grid";
+    }
+
+    function basculerTypeAchatInput() {
+        const cat = document.getElementById('achat-categorie').value;
+        const groupSelect = document.getElementById('group-achat-select');
+        const groupLibre = document.getElementById('group-achat-libre');
+
+        if(cat === "Coût Production") {
+            groupSelect.style.display = "block"; groupLibre.style.display = "none";
+            majInfoLabeAchats();
+        } else {
+            groupSelect.style.display = "none"; groupLibre.style.display = "block";
+            document.getElementById('achat-info-taille').innerText = "";
+        }
+    }
+
+    function majExempleConversion() {
+        const type = document.getElementById('new-ing-type').value;
+        const size = document.getElementById('new-ing-taille').value;
+        document.getElementById('lbl-exemple-conv').innerText = `Exemple : 1 paquet acheté = ${size} ${type}`;
+    }
+    document.getElementById('new-ing-taille').addEventListener('input', majExempleConversion);
+
+    function rafraichirTousLesSelects() {
+        const selAchat = document.getElementById('achat-produit');
+        const selVente = document.getElementById('vente-produit');
+        const selRecetteProd = document.getElementById('recette-produit-select');
+        const selRecetteIng = document.getElementById('recette-ing-nom');
+
+        const ancAchat = selAchat.value; const ancVente = selVente.value; const ancRecProd = selRecetteProd.value;
+
+        selAchat.innerHTML = '';
+        let triIngredients = [...baseIngredients].sort((a,b) => a.nom.localeCompare(b.nom));
+        
+        triIngredients.forEach(ing => { selAchat.innerHTML += `<option value="${escapeHtml(ing.nom)}">${escapeHtml(ing.nom)}</option>`; });
+        if(ancAchat) selAchat.value = ancAchat;
+
+        selRecetteIng.innerHTML = '';
+        triIngredients.forEach(ing => { selRecetteIng.innerHTML += `<option value="${escapeHtml(ing.nom)}">${escapeHtml(ing.nom)}</option>`; });
+
+        selVente.innerHTML = ''; selRecetteProd.innerHTML = '';
+        catalogue.forEach(p => {
+            selVente.innerHTML += `<option value="${escapeHtml(p.nom)}">${escapeHtml(p.nom)}</option>`;
+            selRecetteProd.innerHTML += `<option value="${escapeHtml(p.nom)}">${escapeHtml(p.nom)}</option>`;
+        });
+        
+        if(ancVente) selVente.value = ancVente;
+        if(ancRecProd) selRecetteProd.value = ancRecProd;
+
+        const selEmb = document.getElementById('vente-emballage');
+        const ancEmb = selEmb.value;
+        selEmb.innerHTML = '<option value="">— Aucun —</option>';
+        emballages.forEach(em => { selEmb.innerHTML += `<option value="${escapeHtml(em.nom)}">${escapeHtml(em.nom)} (${em.prix.toFixed(2)} €)</option>`; });
+        if(ancEmb) selEmb.value = ancEmb;
+
+        majInfoLabeAchats(); majUnitetLabelRecette(); appliquerPrixParDefaut(); afficherRecetteProduit();
+    }
+
+    function majInfoLabeAchats() {
+        const nom = document.getElementById('achat-produit').value;
+        if(!nom) return;
+        const ing = baseIngredients.find(i => i.nom === nom);
+        if(ing) {
+            document.getElementById('achat-info-taille').innerText = (ing.classe === "Emballage") ? `💡 Article suivi à la pièce` : `💡 1 paquet = ${ing.taillePaquet} ${ing.type}`;
+        }
+    }
+
+    function majUnitetLabelRecette() {
+        const nom = document.getElementById('recette-ing-nom').value;
+        if(!nom) return;
+        const ing = baseIngredients.find(i => i.nom === nom);
+        if(ing) {
+            document.getElementById('label-recette-qte').innerText = (ing.classe === "Emballage") ? `Quantité (U)` : `Quantité (${ing.type})`;
+        }
+    }
+
+    function appliquerPrixParDefaut() {
+        const prod = catalogue.find(p => p.nom === document.getElementById('vente-produit').value);
+        if(prod) document.getElementById('vente-prix').value = prod.prix;
+        majApercuMargeVente();
+    }
+
+    function majApercuMargeVente() {
+        const produit = document.getElementById('vente-produit').value;
+        const prix = parseFloat(document.getElementById('vente-prix').value) || 0;
+        const quantite = parseInt(document.getElementById('vente-produit-qte').value) || 1;
+        const cout = getCoutRevientRecette(produit);
+        const marge = prix - cout;
+        const margeTotale = marge * quantite;
+        document.getElementById('apercu-marge-vente').innerHTML =
+            `Coût de revient : <strong style="color:var(--danger)">${cout.toFixed(2)} €</strong>/pièce — Bénéfice : <strong style="color:${marge >= 0 ? 'var(--success)' : 'var(--danger)'}">${marge.toFixed(2)} €</strong>/pièce${quantite > 1 ? ` (soit ${margeTotale.toFixed(2)} € pour ${quantite})` : ''}`;
+    }
+
+    function creerNouvelIngredient(e) {
+        e.preventDefault();
+        const nom = document.getElementById('new-ing-nom').value.trim();
+        const nomPropre = nom.charAt(0).toUpperCase() + nom.slice(1);
+        const classe = document.getElementById('new-ing-classe').value;
+        let type = "U", taille = 1;
+        
+        if(classe === "Ingrédient") {
+            type = document.getElementById('new-ing-type').value;
+            taille = parseInt(document.getElementById('new-ing-taille').value);
+        }
+
+        if(!baseIngredients.some(i => i.nom.toLowerCase() === nomPropre.toLowerCase())) {
+            baseIngredients.push({ nom: nomPropre, type: type, taillePaquet: taille, classe: classe });
+            localStorage.setItem('base_ingredients_v9', JSON.stringify(baseIngredients));
+            rafraichirTousLesSelects(); recalculerTout();
+        }
+        document.getElementById('form-nouvel-ing').reset();
+        toggleFormTypeEmballage();
+    }
+
+    // CALCUL DU COÛT DE REVIENT
+    function getCoutRevientRecette(nomProduit) {
+        const compo = recettes[nomProduit] || [];
+        let coutTotal = 0;
+        compo.forEach(ingReq => {
+            const ingDef = baseIngredients.find(i => i.nom === ingReq.ingredient);
+            if(ingDef) {
+                const achatsIng = achats.filter(a => a.produit === ingReq.ingredient);
+                if(achatsIng.length > 0) {
+                    let totalCout = 0; let totalPaquets = 0;
+                    achatsIng.forEach(a => { 
+                        totalCout += (a.cout * a.quantite); 
+                        totalPaquets += a.quantite; 
+                    });
+                    const coutMoyenPaquet = totalCout / totalPaquets;
+                    const coutUnitaire = coutMoyenPaquet / ingDef.taillePaquet;
+                    coutTotal += (coutUnitaire * ingReq.qte);
+                }
+            }
+        });
+        return coutTotal;
+    }
+
+    // PANIER ET COMMANDES VENTES
+    function ajouterAuPanierTemporaire() {
+        const produit = document.getElementById('vente-produit').value;
+        const prix = parseFloat(document.getElementById('vente-prix').value) || 0;
+        const quantite = parseInt(document.getElementById('vente-produit-qte').value) || 1;
+        const coutEstime = getCoutRevientRecette(produit);
+        panierTemporaire.push({ produit: produit, prix: prix, cout: coutEstime, quantite: quantite });
+        document.getElementById('vente-produit-qte').value = 1;
+        majRenduPanierVisuel();
+        majApercuMargeVente();
+    }
+
+    function ajouterEmballageAuPanier() {
+        const nom = document.getElementById('vente-emballage').value;
+        if(!nom) return;
+        const emb = emballages.find(em => em.nom === nom);
+        if(!emb) return;
+        const qte = parseInt(document.getElementById('vente-emballage-qte').value) || 1;
+        panierTemporaire.push({ produit: `Emballage : ${emb.nom} (x${qte})`, prix: 0, cout: emb.prix * qte });
+        majRenduPanierVisuel();
+    }
+
+    function majRenduPanierVisuel() {
+        const box = document.getElementById('liste-panier-encours'); box.innerHTML = ''; let total = 0;
+        const promo = parseFloat(document.getElementById('vente-promo').value) || 0;
+        if(panierTemporaire.length === 0) {
+            box.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">Aucun produit sélectionné.</span>`;
+            document.getElementById('sous-total-panier-txt').innerText = "0.00 €";
+            document.getElementById('total-panier-txt').innerText = "0.00 €"; return;
+        }
+        panierTemporaire.forEach((item, idx) => {
+            const qte = item.quantite || 1;
+            const ligneTotal = item.prix * qte;
+            total += ligneTotal;
+            box.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:5px; border-bottom:1px solid var(--border); padding-bottom:5px;">
+                    <span>• <strong>${escapeHtml(item.produit)}</strong>${qte > 1 ? ` x${qte}` : ''} <br>
+                    <span style="font-size:11px; color:var(--text-muted); margin-left:10px;">Vendu: ${ligneTotal.toFixed(2)} € | Coût ingr.: ~${(item.cout * qte).toFixed(2)} €</span></span>
+                    <button type="button" onclick="retirerDuPanierTemporaire(${idx})" style="width:auto; background:var(--danger); font-size:10px; padding:4px 8px;">X</button>
+                </div>`;
+        });
+        const totalApresPromo = Math.max(0, total * (1 - promo / 100));
+        document.getElementById('sous-total-panier-txt').innerText = total.toFixed(2) + " €";
+        document.getElementById('total-panier-txt').innerText = totalApresPromo.toFixed(2) + " €";
+    }
+
+    function retirerDuPanierTemporaire(idx) { panierTemporaire.splice(idx, 1); majRenduPanierVisuel(); }
+
+    let venteEnEdition = null;
+
+    function validerTouteLaCommande(e) {
+        e.preventDefault();
+        const client = document.getElementById('vente-client').value.trim();
+        if(!client) { alert("Saisis un nom pour la cliente."); return; }
+        if(panierTemporaire.length === 0) { alert("Ton panier actuel est vide."); return; }
+
+        const sousTotal = panierTemporaire.reduce((sum, item) => sum + item.prix * (item.quantite || 1), 0);
+        const promo = parseFloat(document.getElementById('vente-promo').value) || 0;
+        const totalFacture = Math.max(0, sousTotal * (1 - promo / 100));
+        const date = document.getElementById('vente-date').value;
+        const dateLivraison = document.getElementById('vente-date-livraison').value;
+        const statut = document.getElementById('vente-statut').value;
+
+        if(venteEnEdition !== null) {
+            const v = ventes.find(v => v.id === venteEnEdition);
+            if(v) {
+                v.date = date; v.dateLivraison = dateLivraison; v.client = client;
+                v.statut = statut; v.prix = totalFacture; v.promo = promo; v.sousTotal = sousTotal;
+                v.articles = [...panierTemporaire];
+            }
+            annulerModificationVente();
+        } else {
+            ventes.push({
+                id: Date.now(), date: date, dateLivraison: dateLivraison, client: client,
+                statut: statut, prix: totalFacture, promo: promo, sousTotal: sousTotal, articles: [...panierTemporaire]
+            });
+            panierTemporaire = [];
+            document.getElementById('vente-client').value = '';
+            document.getElementById('vente-date').value = codeAujourdhui;
+            document.getElementById('vente-date-livraison').value = codeAujourdhui;
+            document.getElementById('vente-promo').value = 0;
+            majRenduPanierVisuel();
+        }
+        recalculerTout();
+    }
+
+    function modifierCommande(id) {
+        const v = ventes.find(v => v.id === id);
+        if(!v) return;
+
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('page-ops').classList.add('active');
+        document.querySelector('.tab-btn').classList.add('active');
+
+        venteEnEdition = id;
+        document.getElementById('vente-date').value = v.date;
+        document.getElementById('vente-date-livraison').value = v.dateLivraison || v.date;
+        document.getElementById('vente-client').value = v.client;
+        document.getElementById('vente-statut').value = v.statut;
+        document.getElementById('vente-promo').value = v.promo || 0;
+        panierTemporaire = v.articles ? JSON.parse(JSON.stringify(v.articles)) : [];
+        majRenduPanierVisuel();
+
+        const banner = document.getElementById('edit-mode-banner');
+        banner.style.display = 'flex';
+        document.getElementById('edit-mode-text').innerText = `✏️ Modification de la commande de ${v.client} — corrige les articles, la promo ou les dates puis valide.`;
+        document.getElementById('btn-valider-commande').innerText = 'Mettre à jour la commande';
+
+        document.getElementById('form-vente-config').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function annulerModificationVente() {
+        venteEnEdition = null;
+        panierTemporaire = [];
+        document.getElementById('vente-client').value = '';
+        document.getElementById('vente-date').value = codeAujourdhui;
+        document.getElementById('vente-date-livraison').value = codeAujourdhui;
+        document.getElementById('vente-statut').value = 'En cours';
+        document.getElementById('vente-promo').value = 0;
+        majRenduPanierVisuel();
+        document.getElementById('edit-mode-banner').style.display = 'none';
+        document.getElementById('btn-valider-commande').innerText = 'Enregistrer la commande globale';
+    }
+
+    // ACHATS
+    function ajouterAchat(e) {
+        e.preventDefault();
+        const cat = document.getElementById('achat-categorie').value;
+        const nbrePaquets = parseInt(document.getElementById('achat-quantite').value);
+        const coutPaquet = parseFloat(document.getElementById('achat-cout').value);
+        let nomFinal = "";
+
+        if(cat === "Coût Production") {
+            nomFinal = document.getElementById('achat-produit').value;
+        } else {
+            nomFinal = document.getElementById('achat-produit-libre').value.trim();
+            if(!nomFinal) { alert("Donne un nom à ta dépense."); return; }
+        }
+
+        achats.push({
+            id: Date.now(),
+            date: document.getElementById('achat-date').value,
+            produit: nomFinal, quantite: nbrePaquets, cout: coutPaquet, categorie: cat
+        });
+
+        document.getElementById('form-achat').reset();
+        document.getElementById('achat-date').value = codeAujourdhui;
+        basculerTypeAchatInput(); recalculerTout();
+    }
+
+    // RECETTES
+    function afficherRecetteProduit() {
+        const prod = document.getElementById('recette-produit-select').value;
+        const tbody = document.querySelector('#table-recette-composition tbody'); tbody.innerHTML = '';
+        if(!prod) return;
+        const compo = recettes[prod] || [];
+        compo.forEach((ingReq, idx) => {
+            const ingDef = baseIngredients.find(i => i.nom === ingReq.ingredient) || { type: 'U' };
+            tbody.innerHTML += `<tr><td>${escapeHtml(ingReq.ingredient)}</td><td><strong>${formatQte(ingReq.qte)} ${escapeHtml(ingDef.type)}</strong></td><td><button data-prod="${escapeHtml(prod)}" data-idx="${idx}" onclick="retirerIngRecette(this.dataset.prod, parseInt(this.dataset.idx))" class="btn-small btn-del">Retirer</button></td></tr>`;
+        });
+    }
+
+    function ajouterIngredientRecette(e) {
+        e.preventDefault();
+        const prod = document.getElementById('recette-produit-select').value;
+        const ing = document.getElementById('recette-ing-nom').value;
+        const qte = parseFloat(document.getElementById('recette-ing-qte').value);
+
+        if(!recettes[prod]) recettes[prod] = [];
+        let existant = recettes[prod].find(i => i.ingredient === ing);
+        if(existant) existant.qte += qte; else recettes[prod].push({ ingredient: ing, qte: qte });
+        recalculerTout(); afficherRecetteProduit();
+    }
+
+    function retirerIngRecette(prod, idx) { recettes[prod].splice(idx, 1); recalculerTout(); afficherRecetteProduit(); }
+    
+    function ajouterAuCatalogue(e) {
+        e.preventDefault();
+        const nom = document.getElementById('cat-nom').value.trim();
+        const prix = parseFloat(document.getElementById('cat-prix').value);
+        if(!catalogue.some(p => p.nom.toLowerCase() === nom.toLowerCase())) {
+            catalogue.push({ id: Date.now(), nom: nom, prix: prix }); recettes[nom] = [];
+            rafraichirTousLesSelects(); recalculerTout();
+        }
+        document.getElementById('form-catalogue').reset();
+    }
+
+    function ajouterEmballage(e) {
+        e.preventDefault();
+        const nom = document.getElementById('emb-nom').value.trim();
+        const prix = parseFloat(document.getElementById('emb-prix').value);
+        if(!emballages.some(em => em.nom.toLowerCase() === nom.toLowerCase())) {
+            emballages.push({ id: Date.now(), nom: nom, prix: prix });
+            localStorage.setItem('emballages_v9', JSON.stringify(emballages));
+            rafraichirTousLesSelects(); recalculerTout();
+        }
+        document.getElementById('form-emballage').reset();
+    }
+
+    function supprimerEmballage(id) {
+        emballages = emballages.filter(em => em.id !== id);
+        localStorage.setItem('emballages_v9', JSON.stringify(emballages));
+        rafraichirTousLesSelects(); recalculerTout();
+    }
+
+    // LOGIQUE DE CALCULS ET HISTORIQUES
+    function recalculerTout() {
+        let ca = 0, depenses = 0, inv = 0, prod = 0, frais = 0;
+        ventes.forEach(v => ca += parseFloat(v.prix));
+        achats.forEach(a => {
+            let totalLigne = parseFloat(a.cout) * parseInt(a.quantite); depenses += totalLigne;
+            if(a.categorie === "Investissement") inv += totalLigne;
+            else if(a.categorie === "Coût Production") prod += totalLigne;
+            else frais += totalLigne;
+        });
+
+        document.getElementById('kpi-ca').innerText = ca.toFixed(2) + " €";
+        document.getElementById('kpi-depenses').innerText = depenses.toFixed(2) + " €";
+        document.getElementById('kpi-benefice').innerText = (ca - prod - frais).toFixed(2) + " €";
+
+        localStorage.setItem('achats_v9', JSON.stringify(achats));
+        localStorage.setItem('ventes_v9', JSON.stringify(ventes));
+        localStorage.setItem('catalogue_v9', JSON.stringify(catalogue));
+        localStorage.setItem('recettes_v9', JSON.stringify(recettes));
+
+        majVisualBar(inv, prod, frais, depenses); majTablesVisuelles();
+    }
+
+    function majVisualBar(inv, prod, frais, total) {
+        document.getElementById('txt-inv').innerText = inv.toFixed(2) + " €";
+        document.getElementById('txt-prod').innerText = prod.toFixed(2) + " €";
+        document.getElementById('txt-frais').innerText = frais.toFixed(2) + " €";
+        if(total > 0) {
+            let pInv = ((inv / total) * 100).toFixed(0), pProd = ((prod / total) * 100).toFixed(0), pFrais = ((frais / total) * 100).toFixed(0);
+            document.getElementById('bar-inv').style.width = pInv + "%"; document.getElementById('bar-prod').style.width = pProd + "%"; document.getElementById('bar-frais').style.width = pFrais + "%";
+            document.getElementById('pct-inv').innerText = pInv + "%"; document.getElementById('pct-prod').innerText = pProd + "%"; document.getElementById('pct-frais').innerText = pFrais + "%";
+        } else {
+            document.querySelectorAll('.bar-seg').forEach(b => b.style.width = "0%");
+            document.getElementById('pct-inv').innerText = "0%"; document.getElementById('pct-prod').innerText = "0%"; document.getElementById('pct-frais').innerText = "0%";
+        }
+    }
+
+    function editerAchatRow(id) {
+        const a = achats.find(a => a.id === id); const tr = document.getElementById(`achat-${id}`); let inputProduitHtml = "";
+        if(a.categorie === "Coût Production") {
+            let options = baseIngredients.map(i => `<option value="${escapeHtml(i.nom)}" ${i.nom === a.produit ? 'selected' : ''}>${escapeHtml(i.nom)}</option>`).join('');
+            inputProduitHtml = `<select id="edit-a-prod-${id}" style="padding:4px;">${options}</select>`;
+        } else {
+            inputProduitHtml = `<input type="text" id="edit-a-prod-${id}" value="${escapeHtml(a.produit)}" style="padding:4px;">`;
+        }
+        tr.innerHTML = `
+            <td><input type="date" id="edit-a-date-${id}" value="${a.date}"></td>
+            <td>${inputProduitHtml} x <input type="number" style="width:40px; padding:4px;" id="edit-a-qty-${id}" value="${a.quantite}"></td>
+            <td><span class="badge" style="background-color:var(--text-muted);">${a.categorie}</span></td>
+            <td>P.U: <input type="number" step="0.01" style="width:60px; padding:4px;" id="edit-a-cout-${id}" value="${a.cout}"> €</td>
+            <td><button onclick="sauverAchatRow(${id})" class="btn-small btn-save">OK</button></td>
+        `;
+    }
+
+    function sauverAchatRow(id) {
+        const a = achats.find(a => a.id === id);
+        a.date = document.getElementById('edit-a-date-' + id).value; a.produit = document.getElementById('edit-a-prod-' + id).value;
+        a.quantite = parseInt(document.getElementById('edit-a-qty-' + id).value); a.cout = document.getElementById('edit-a-cout-' + id).value;
+        recalculerTout();
+    }
+
+    function supprimerAchat(id) { achats = achats.filter(a => a.id !== id); recalculerTout(); }
+    function supprimerVente(id) { ventes = ventes.filter(v => v.id !== id); recalculerTout(); }
+    function supprimerCatalogue(id) { const p = catalogue.find(c => c.id === id); if(p) { delete recettes[p.nom]; catalogue = catalogue.filter(c => c.id !== id); } rafraichirTousLesSelects(); recalculerTout(); }
+    function modifierPrixCatalogue(id, valeur) { const p = catalogue.find(c => c.id === id); if(p) { p.prix = parseFloat(valeur) || 0; recalculerTout(); } }
+    function supprimerIngredientMaster(nom) {
+        if(!confirm(`Supprimer "${nom}" des masters ?`)) return;
+        baseIngredients = baseIngredients.filter(i => i.nom !== nom);
+        Object.keys(recettes).forEach(prod => {
+            recettes[prod] = recettes[prod].filter(ingReq => ingReq.ingredient !== nom);
+        });
+        localStorage.setItem('base_ingredients_v9', JSON.stringify(baseIngredients));
+        rafraichirTousLesSelects(); recalculerTout(); afficherRecetteProduit();
+    }
+
+    function majTablesVisuelles() {
+        const tbodyV = document.querySelector('#table-ventes tbody'); tbodyV.innerHTML = '';
+        ventes.slice().reverse().forEach(v => {
+            let descArticlesHtml = "";
+            let coutTotal = 0;
+            if (v.articles && v.articles.length > 0) {
+                coutTotal = v.articles.reduce((s, a) => s + (parseFloat(a.cout) || 0) * (a.quantite || 1), 0);
+                descArticlesHtml = v.articles.map(a => `<div style="margin-bottom: 2px;">• ${escapeHtml(a.produit)}${(a.quantite || 1) > 1 ? ` x${a.quantite}` : ''}</div>`).join('');
+            } else {
+                descArticlesHtml = `<div>• ${escapeHtml(v.produit)}</div>`;
+            }
+            let marge = parseFloat(v.prix) - coutTotal;
+
+            let dateLivraisonAffiche = v.dateLivraison ? formatFr(v.dateLivraison) : formatFr(v.date);
+            tbodyV.innerHTML += `
+                <tr id="vente-${v.id}">
+                    <td><span style="color:var(--text-muted); font-size:11px;">${formatFr(v.date)}</span><br><strong>➔ ${dateLivraisonAffiche}</strong></td>
+                    <td><strong>${escapeHtml(v.client)}</strong></td>
+                    <td>${descArticlesHtml}</td>
+                    <td><strong style="color:var(--danger)">${coutTotal.toFixed(2)} €</strong></td>
+                    <td><strong style="color:var(--success)">${parseFloat(v.prix).toFixed(2)} €</strong>${v.promo > 0 ? `<br><span style="font-size:11px; color:var(--danger);">Promo : -${parseFloat(v.promo).toFixed(0)}% ${v.sousTotal ? `(sous-total ${parseFloat(v.sousTotal).toFixed(2)} €)` : ''}</span>` : ''}</td>
+                    <td><strong style="color:${marge >= 0 ? 'var(--success)' : 'var(--danger)'}">${marge.toFixed(2)} €</strong></td>
+                    <td><span class="badge" style="background-color:${v.statut === 'En cours' ? 'var(--accent)' : 'var(--text-muted)'}">${v.statut}</span></td>
+                    <td class="action-btns">
+                        <button onclick="modifierCommande(${v.id})" class="btn-small btn-edit">Modifier</button>
+                        <button onclick="supprimerVente(${v.id})" class="btn-small btn-del">Supprimer</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        const tbodyA = document.querySelector('#table-achats tbody'); tbodyA.innerHTML = '';
+        achats.slice().reverse().forEach(a => {
+            let total = parseFloat(a.cout) * parseInt(a.quantite);
+            tbodyA.innerHTML += `
+                <tr id="achat-${a.id}">
+                    <td>${formatFr(a.date)}</td>
+                    <td><strong>${escapeHtml(a.produit)}</strong> <span style="color:var(--text-muted)">(x${a.quantite})</span></td>
+                    <td><span style="font-size:11px; color:white; background-color:var(--text-muted); padding:3px 6px; border-radius:4px;">${a.categorie}</span></td>
+                    <td><strong>${total.toFixed(2)} €</strong> <span style="font-size:11px; color:var(--text-muted)">(${parseFloat(a.cout).toFixed(2)}€/u)</span></td>
+                    <td class="action-btns">
+                        <button onclick="editerAchatRow(${a.id})" class="btn-small btn-edit">Modifier</button>
+                        <button onclick="supprimerAchat(${a.id})" class="btn-small btn-del">Supprimer</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        const tbodyC = document.querySelector('#table-catalogue tbody'); tbodyC.innerHTML = '';
+        catalogue.forEach(p => {
+            const coutRevient = getCoutRevientRecette(p.nom);
+            const marge = p.prix - coutRevient;
+            tbodyC.innerHTML += `<tr><td><strong>${escapeHtml(p.nom)}</strong></td><td style="color:var(--danger)">${coutRevient.toFixed(2)} €</td><td><input type="number" step="0.01" min="0" value="${p.prix}" style="width:75px; padding:4px;" onchange="modifierPrixCatalogue(${p.id}, this.value)"></td><td style="color:${marge >= 0 ? 'var(--success)' : 'var(--danger)'}"><strong>${marge.toFixed(2)} €</strong></td><td><button onclick="supprimerCatalogue(${p.id})" class="btn-small btn-del">Supprimer</button></td></tr>`;
+        });
+
+        const tbodyIngredients = document.querySelector('#table-ingredients tbody'); tbodyIngredients.innerHTML = '';
+        let triIngredients = [...baseIngredients].sort((a,b) => a.nom.localeCompare(b.nom));
+
+        triIngredients.forEach(ing => {
+            const nomAttr = escapeHtml(ing.nom);
+            const conditionnement = (ing.classe === "Emballage") ? "À la pièce" : `${ing.taillePaquet} ${escapeHtml(ing.type)} / paquet`;
+            tbodyIngredients.innerHTML += `
+                <tr>
+                    <td><strong>${escapeHtml(ing.nom)}</strong> <span style="color:var(--text-muted); font-size:11px;">(${escapeHtml(ing.classe)})</span></td>
+                    <td>${conditionnement}</td>
+                    <td><button data-nom="${nomAttr}" onclick="supprimerIngredientMaster(this.dataset.nom)" class="btn-small btn-del">X</button></td>
+                </tr>
+            `;
+        });
+
+        const tbodyEmballages = document.querySelector('#table-emballages tbody'); tbodyEmballages.innerHTML = '';
+        emballages.forEach(em => {
+            tbodyEmballages.innerHTML += `<tr><td><strong>${escapeHtml(em.nom)}</strong></td><td>${em.prix.toFixed(2)} €</td><td><button onclick="supprimerEmballage(${em.id})" class="btn-small btn-del">Supprimer</button></td></tr>`;
+        });
+    }
+
+    function reinitialiserDonnees() { if(confirm("Ambrine, réinitialiser la v9 beige ?")) { localStorage.clear(); location.reload(); } }
+
+    rafraichirTousLesSelects();
+    recalculerTout();
+</script>
+</body>
+</html>
