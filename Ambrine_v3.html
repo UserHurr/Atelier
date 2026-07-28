@@ -147,44 +147,11 @@
     <div id="page-ops" class="tab-content active">
         <div class="kpi-grid">
             <div class="kpi-card"><div class="kpi-label">Chiffre d'Affaires</div><div class="kpi-value" id="kpi-ca" style="color: var(--success);">0,00 €</div></div>
-            <div class="kpi-card"><div class="kpi-label">Dépenses Totales</div><div class="kpi-value" id="kpi-depenses" style="color:var(--danger)">0,00 €</div></div>
-            <div class="kpi-card"><div class="kpi-label">Bénéfice Net (hors investissements)</div><div class="kpi-value" id="kpi-benefice" style="color: var(--text-color);">0,00 €</div></div>
+            <div class="kpi-card"><div class="kpi-label">Coût de Revient</div><div class="kpi-value" id="kpi-depenses" style="color:var(--danger)">0,00 €</div></div>
+            <div class="kpi-card"><div class="kpi-label">Bénéfice Net</div><div class="kpi-value" id="kpi-benefice" style="color: var(--text-color);">0,00 €</div></div>
         </div>
 
         <div class="main-grid">
-            <!-- Formulaire Achat -->
-            <div class="card">
-                <h2>+ Enregistrer un Achat</h2>
-                <form id="form-achat" onsubmit="ajouterAchat(event)">
-                    <div class="form-group"><label>Date de l'achat</label><input type="date" id="achat-date" required></div>
-                    <div class="form-group">
-                        <label>Catégorie de dépense</label>
-                        <select id="achat-categorie" onchange="basculerTypeAchatInput()">
-                            <option value="Coût Production">Coût de Production (Ingrédients, Boîtes...)</option>
-                            <option value="Investissement">Investissement (Matériel labo...)</option>
-                            <option value="Frais Divers">Charges / Frais Divers</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group" id="group-achat-select">
-                        <label>Sélectionner l'ingrédient / article</label>
-                        <select id="achat-produit" onchange="majInfoLabeAchats()"></select>
-                        <span id="achat-info-taille" class="info-conversion"></span>
-                    </div>
-
-                    <div class="form-group" id="group-achat-libre" style="display: none;">
-                        <label>Nom de la dépense (Saisie manuelle)</label>
-                        <input type="text" id="achat-produit-libre" placeholder="Ex: Robot pâtissier, Pub, Ustensiles">
-                    </div>
-
-                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div><label id="label-achat-qte">Nombre de paquets</label><input type="number" id="achat-quantite" value="1" min="1" required></div>
-                        <div><label>Coût unitaire (€)</label><input type="number" step="0.01" id="achat-cout" placeholder="0.00" min="0" required></div>
-                    </div>
-                    <button type="submit">Enregistrer l'achat</button>
-                </form>
-            </div>
-
             <!-- Formulaire Vente -->
             <div class="card">
                 <h2>+ Enregistrer une Vente</h2>
@@ -252,39 +219,14 @@
                     <button type="button" id="btn-valider-commande" onclick="validerTouteLaCommande(event)">Enregistrer la commande globale</button>
                 </form>
             </div>
-
-            <!-- Répartition Visuelle -->
-            <div class="card">
-                <h2>Répartition Visuelle des Dépenses</h2>
-                <div class="visual-bar-container">
-                    <div id="bar-inv" class="bar-seg inv" style="width: 0%"></div>
-                    <div id="bar-prod" class="bar-seg prod" style="width: 0%"></div>
-                    <div id="bar-frais" class="bar-seg frais" style="width: 0%"></div>
-                </div>
-                <div class="legend-list">
-                    <div class="legend-item"><span class="dot inv"></span> <span>Investissements : <strong id="txt-inv">0.00 €</strong> (<span id="pct-inv">0%</span>)</span></div>
-                    <div class="legend-item"><span class="dot prod"></span> <span>Coûts de Production : <strong id="txt-prod">0.00 €</strong> (<span id="pct-prod">0%</span>)</span></div>
-                    <div class="legend-item"><span class="dot frais"></span> <span>Charges / Frais Divers : <strong id="txt-frais">0.00 €</strong> (<span id="pct-frais">0%</span>)</span></div>
-                </div>
-            </div>
         </div>
 
-        <!-- Historiques -->
-        <div class="card" style="margin-bottom: 20px;">
+        <!-- Historique -->
+        <div class="card">
             <h2>Historique des Ventes & Commandes</h2>
             <div class="table-container">
                 <table id="table-ventes">
                     <thead><tr><th>Dates (Saisie ➔ Livraison)</th><th>Cliente / Événement</th><th>Articles</th><th>Coût de revient</th><th>Total payé</th><th>Marge</th><th>Statut</th><th>Actions</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>Historique des Achats & Approvisionnements</h2>
-            <div class="table-container">
-                <table id="table-achats">
-                    <thead><tr><th>Date</th><th>Élément</th><th>Catégorie</th><th>Coût Total</th><th>Actions</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -378,6 +320,46 @@
                 <div class="table-container" style="max-height: 220px; margin-top:15px;">
                     <table id="table-emballages">
                         <thead><tr><th>Nom</th><th>Prix</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Achats / mise à jour des coûts -->
+            <div class="card">
+                <h2>5. Enregistrer un Achat</h2>
+                <p style="font-size:12px; color:var(--text-muted); margin-top:-8px; margin-bottom:12px;">Met à jour le coût de revient des recettes utilisant cet ingrédient.</p>
+                <form id="form-achat" onsubmit="ajouterAchat(event)">
+                    <div class="form-group"><label>Date de l'achat</label><input type="date" id="achat-date" required></div>
+                    <div class="form-group">
+                        <label>Catégorie de dépense</label>
+                        <select id="achat-categorie" onchange="basculerTypeAchatInput()">
+                            <option value="Coût Production">Coût de Production (Ingrédients, Boîtes...)</option>
+                            <option value="Investissement">Investissement (Matériel labo...)</option>
+                            <option value="Frais Divers">Charges / Frais Divers</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="group-achat-select">
+                        <label>Sélectionner l'ingrédient / article</label>
+                        <select id="achat-produit" onchange="majInfoLabeAchats()"></select>
+                        <span id="achat-info-taille" class="info-conversion"></span>
+                    </div>
+
+                    <div class="form-group" id="group-achat-libre" style="display: none;">
+                        <label>Nom de la dépense (Saisie manuelle)</label>
+                        <input type="text" id="achat-produit-libre" placeholder="Ex: Robot pâtissier, Pub, Ustensiles">
+                    </div>
+
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label id="label-achat-qte">Nombre de paquets</label><input type="number" id="achat-quantite" value="1" min="1" required></div>
+                        <div><label>Coût unitaire (€)</label><input type="number" step="0.01" id="achat-cout" placeholder="0.00" min="0" required></div>
+                    </div>
+                    <button type="submit">Enregistrer l'achat</button>
+                </form>
+                <div class="table-container" style="max-height: 220px; margin-top:15px;">
+                    <table id="table-achats">
+                        <thead><tr><th>Date</th><th>Élément</th><th>Catégorie</th><th>Coût Total</th><th>Actions</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -1037,39 +1019,24 @@
 
     // LOGIQUE DE CALCULS ET HISTORIQUES
     function recalculerTout() {
-        let ca = 0, depenses = 0, inv = 0, prod = 0, frais = 0;
-        ventes.forEach(v => ca += parseFloat(v.prix));
-        achats.filter(a => !a.seed).forEach(a => {
-            let totalLigne = parseFloat(a.cout) * parseInt(a.quantite); depenses += totalLigne;
-            if(a.categorie === "Investissement") inv += totalLigne;
-            else if(a.categorie === "Coût Production") prod += totalLigne;
-            else frais += totalLigne;
+        let ca = 0, coutRevientTotal = 0;
+        ventes.forEach(v => {
+            ca += parseFloat(v.prix);
+            if(v.articles && v.articles.length > 0) {
+                coutRevientTotal += v.articles.reduce((s, a) => s + (parseFloat(a.cout) || 0) * (a.quantite || 1), 0);
+            }
         });
 
         document.getElementById('kpi-ca').innerText = ca.toFixed(2) + " €";
-        document.getElementById('kpi-depenses').innerText = depenses.toFixed(2) + " €";
-        document.getElementById('kpi-benefice').innerText = (ca - prod - frais).toFixed(2) + " €";
+        document.getElementById('kpi-depenses').innerText = coutRevientTotal.toFixed(2) + " €";
+        document.getElementById('kpi-benefice').innerText = (ca - coutRevientTotal).toFixed(2) + " €";
 
         localStorage.setItem('achats_v9', JSON.stringify(achats));
         localStorage.setItem('ventes_v9', JSON.stringify(ventes));
         localStorage.setItem('catalogue_v9', JSON.stringify(catalogue));
         localStorage.setItem('recettes_v9', JSON.stringify(recettes));
 
-        majVisualBar(inv, prod, frais, depenses); majTablesVisuelles();
-    }
-
-    function majVisualBar(inv, prod, frais, total) {
-        document.getElementById('txt-inv').innerText = inv.toFixed(2) + " €";
-        document.getElementById('txt-prod').innerText = prod.toFixed(2) + " €";
-        document.getElementById('txt-frais').innerText = frais.toFixed(2) + " €";
-        if(total > 0) {
-            let pInv = ((inv / total) * 100).toFixed(0), pProd = ((prod / total) * 100).toFixed(0), pFrais = ((frais / total) * 100).toFixed(0);
-            document.getElementById('bar-inv').style.width = pInv + "%"; document.getElementById('bar-prod').style.width = pProd + "%"; document.getElementById('bar-frais').style.width = pFrais + "%";
-            document.getElementById('pct-inv').innerText = pInv + "%"; document.getElementById('pct-prod').innerText = pProd + "%"; document.getElementById('pct-frais').innerText = pFrais + "%";
-        } else {
-            document.querySelectorAll('.bar-seg').forEach(b => b.style.width = "0%");
-            document.getElementById('pct-inv').innerText = "0%"; document.getElementById('pct-prod').innerText = "0%"; document.getElementById('pct-frais').innerText = "0%";
-        }
+        majTablesVisuelles();
     }
 
     function editerAchatRow(id) {
