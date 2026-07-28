@@ -64,21 +64,30 @@
         .kpi-value { font-size: 20px; font-weight: 700; margin-top: 5px; }
 
         .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
 
-        .form-group { margin-bottom: 12px; }
+        .form-group { margin-bottom: 10px; }
         label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
         input, select {
-            width: 100%; padding: 11px 10px; background-color: var(--card-bg);
+            width: 100%; padding: 9px 10px; background-color: var(--card-bg);
             border: 1px solid var(--border); border-radius: 6px; color: var(--text-color);
-            box-sizing: border-box; font-size: 16px; min-height: 44px;
+            box-sizing: border-box; font-size: 16px; min-height: 40px;
         }
         input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px rgba(196, 164, 130, 0.15); }
 
         button {
-            width: 100%; padding: 13px 11px; background-color: var(--accent); border: none;
-            border-radius: 6px; color: #fff; font-weight: 600; cursor: pointer; font-size: 15px;
-            transition: background 0.2s; touch-action: manipulation; min-height: 44px;
+            width: 100%; padding: 10px 11px; background-color: var(--accent); border: none;
+            border-radius: 6px; color: #fff; font-weight: 600; cursor: pointer; font-size: 14px;
+            transition: background 0.2s; touch-action: manipulation; min-height: 40px;
+        }
+
+        .subsection {
+            background-color: var(--bg-color); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+            padding: 10px 12px; border-radius: 6px; margin-bottom: 10px;
+        }
+        .subsection-title {
+            display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--accent-hover); margin-bottom: 8px;
         }
         button:hover { background-color: var(--accent-hover); }
         button:active { background-color: var(--accent-hover); transform: scale(0.99); }
@@ -175,8 +184,8 @@
                         </div>
                     </div>
                     
-                    <div style="background: var(--bg-color); border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
-                        <label>Sélectionner un produit :</label>
+                    <div class="subsection">
+                        <span class="subsection-title">Produit</span>
                         <select id="vente-produit" onchange="appliquerPrixParDefaut()" style="margin-bottom:8px;"></select>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:8px;">
                             <div><label>Prix unitaire appliqué (€)</label><input type="number" step="0.01" id="vente-prix" min="0" oninput="majApercuMargeVente()"></div>
@@ -186,34 +195,42 @@
                         <button type="button" onclick="ajouterAuPanierTemporaire()" style="background-color: var(--blue); color: var(--text-color); padding: 7px; font-size:12px;">+ Ajouter à cette commande</button>
                     </div>
 
-                    <div style="background: var(--bg-color); border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
-                        <label>Emballage utilisé (optionnel) :</label>
+                    <div class="subsection">
+                        <span class="subsection-title">Supplément (optionnel)</span>
                         <select id="vente-emballage" style="margin-bottom:8px;"><option value="">— Aucun —</option></select>
                         <label>Quantité</label>
                         <input type="number" id="vente-emballage-qte" value="1" min="1" style="margin-bottom:8px;">
-                        <button type="button" onclick="ajouterEmballageAuPanier()" style="background-color: var(--blue); color: var(--text-color); padding: 7px; font-size:12px;">+ Ajouter cet emballage</button>
+                        <button type="button" onclick="ajouterEmballageAuPanier()" style="background-color: var(--blue); color: var(--text-color); padding: 7px; font-size:12px;">+ Ajouter ce supplément</button>
                     </div>
 
-                    <label>Contenu de la commande :</label>
-                    <div class="panier-box" id="liste-panier-encours">
-                        <span style="color:var(--text-muted); font-size:12px;">Aucun produit sélectionné.</span>
+                    <div class="subsection">
+                        <span class="subsection-title">Livraison (optionnelle)</span>
+                        <input type="number" step="0.01" id="vente-livraison-prix" min="0" placeholder="Prix de la livraison (€)" style="margin-bottom:8px;">
+                        <button type="button" onclick="ajouterLivraisonAuPanier()" style="background-color: var(--blue); color: var(--text-color); padding: 7px; font-size:12px;">+ Ajouter cette livraison</button>
                     </div>
-                    <div class="form-group">
-                        <label>Promo / Réduction sur cette commande (%)</label>
-                        <input type="number" step="1" id="vente-promo" value="0" min="0" max="100" oninput="majRenduPanierVisuel()">
-                    </div>
-                    <div style="font-size:13px; color:var(--text-muted); display:flex; justify-content:space-between; margin-bottom:4px;">
-                        <span>Sous-total articles (avant promo)</span><span id="sous-total-panier-txt">0.00 €</span>
-                    </div>
-                    <div style="font-size:13px; color:var(--danger); display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <span>Coût de revient total</span><span id="cout-revient-panier-txt">0.00 €</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Prix de vente final de la commande (€) — ajustable librement</label>
-                        <input type="number" step="0.01" id="vente-prix-final" min="0" oninput="prixFinalModifieManuellement=true; majBeneficeCommandePreview();">
-                    </div>
-                    <div style="font-size:15px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:12px;">
-                        <span>Bénéfice de la commande</span><span id="benefice-panier-txt" style="color:var(--success)">0.00 €</span>
+
+                    <div class="subsection" style="border-left-color: var(--success);">
+                        <span class="subsection-title">Contenu de la commande</span>
+                        <div class="panier-box" id="liste-panier-encours" style="margin-top:0;">
+                            <span style="color:var(--text-muted); font-size:12px;">Aucun produit sélectionné.</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Promo / Réduction sur cette commande (%)</label>
+                            <input type="number" step="1" id="vente-promo" value="0" min="0" max="100" oninput="majRenduPanierVisuel()">
+                        </div>
+                        <div style="font-size:13px; color:var(--text-muted); display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span>Sous-total articles (avant promo)</span><span id="sous-total-panier-txt">0.00 €</span>
+                        </div>
+                        <div style="font-size:13px; color:var(--danger); display:flex; justify-content:space-between; margin-bottom:10px;">
+                            <span>Coût de revient total</span><span id="cout-revient-panier-txt">0.00 €</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Prix de vente final de la commande (€) — ajustable librement</label>
+                            <input type="number" step="0.01" id="vente-prix-final" min="0" oninput="prixFinalModifieManuellement=true; majBeneficeCommandePreview();">
+                        </div>
+                        <div style="font-size:15px; font-weight:700; display:flex; justify-content:space-between;">
+                            <span>Bénéfice de la commande</span><span id="benefice-panier-txt" style="color:var(--success)">0.00 €</span>
+                        </div>
                     </div>
 
                     <button type="button" id="btn-valider-commande" onclick="validerTouteLaCommande(event)">Enregistrer la commande globale</button>
@@ -226,7 +243,7 @@
             <h2>Historique des Ventes & Commandes</h2>
             <div class="table-container">
                 <table id="table-ventes">
-                    <thead><tr><th>Dates (Saisie ➔ Livraison)</th><th>Cliente / Événement</th><th>Articles</th><th>Coût de revient</th><th>Total payé</th><th>Marge</th><th>Statut</th><th>Actions</th></tr></thead>
+                    <thead><tr><th>Dates (Saisie ➔ Livraison)</th><th>Cliente / Événement</th><th>Articles</th><th>Frais livraison</th><th>Coût de revient</th><th>Total payé</th><th>Marge</th><th>Statut</th><th>Actions</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -489,7 +506,28 @@
         { id: 55, date: dateSeed, produit: "Jus de citron", quantite: 1, cout: 1.50, categorie: "Coût Production", seed: true },
         { id: 56, date: dateSeed, produit: "Crevettes", quantite: 1, cout: 25.00, categorie: "Coût Production", seed: true }
     ];
-    let ventes = JSON.parse(localStorage.getItem('ventes_v9')) || [];
+    let ventes = JSON.parse(localStorage.getItem('ventes_v9')) || [
+        {
+            id: 1700000000001, date: "2026-07-17", dateLivraison: "2026-07-22", client: "Pique nique",
+            statut: "Terminée", prix: 36.00, promo: 0, sousTotal: 33.60,
+            articles: [
+                { produit: "Navette Saumon", prix: 1.80, cout: 0.742, quantite: 6 },
+                { produit: "Verrines Framboise", prix: 1.40, cout: 0.622, quantite: 4 },
+                { produit: "Nashville Chicken", prix: 1.40, cout: 0.371, quantite: 6 },
+                { produit: "Mini Wrap Poulet", prix: 1.60, cout: 0.696, quantite: 6 }
+            ]
+        },
+        {
+            id: 1700000000002, date: "2026-07-20", dateLivraison: "2026-07-26", client: "Plateau mosquée",
+            statut: "Terminée", prix: 42.80, promo: 0, sousTotal: 36.20,
+            articles: [
+                { produit: "Mini Focaccia", prix: 1.80, cout: 0.34, quantite: 4 },
+                { produit: "Nashville Chicken", prix: 1.40, cout: 0.371, quantite: 10 },
+                { produit: "Navette Saumon", prix: 1.80, cout: 0.742, quantite: 5 },
+                { produit: "Dynamite Chicken", prix: 1.50, cout: 0.549, quantite: 4 }
+            ]
+        }
+    ];
     let catalogue = JSON.parse(localStorage.getItem('catalogue_v9')) || [
         { id: 1, nom: "Mini Focaccia", prix: 1.80 },
         { id: 2, nom: "Mini Burger", prix: 1.40 },
@@ -810,6 +848,14 @@
         majRenduPanierVisuel();
     }
 
+    function ajouterLivraisonAuPanier() {
+        const prix = parseFloat(document.getElementById('vente-livraison-prix').value) || 0;
+        if(prix <= 0) { alert("Indique un prix de livraison."); return; }
+        panierTemporaire.push({ produit: "Livraison", prix: prix, cout: 0 });
+        document.getElementById('vente-livraison-prix').value = '';
+        majRenduPanierVisuel();
+    }
+
     let prixFinalModifieManuellement = false;
 
     function majRenduPanierVisuel() {
@@ -1089,6 +1135,7 @@
                 descArticlesHtml = `<div>• ${escapeHtml(v.produit)}</div>`;
             }
             let marge = parseFloat(v.prix) - coutTotal;
+            let fraisLivraison = v.articles ? v.articles.filter(a => a.produit === "Livraison").reduce((s, a) => s + (parseFloat(a.prix) || 0), 0) : 0;
 
             let dateLivraisonAffiche = v.dateLivraison ? formatFr(v.dateLivraison) : formatFr(v.date);
             tbodyV.innerHTML += `
@@ -1096,6 +1143,7 @@
                     <td><span style="color:var(--text-muted); font-size:11px;">${formatFr(v.date)}</span><br><strong>➔ ${dateLivraisonAffiche}</strong></td>
                     <td><strong>${escapeHtml(v.client)}</strong></td>
                     <td>${descArticlesHtml}</td>
+                    <td>${fraisLivraison > 0 ? `<strong style="color:var(--blue); background:rgba(212,196,180,0.35); padding:3px 8px; border-radius:4px;">🚚 ${fraisLivraison.toFixed(2)} €</strong>` : `<span style="color:var(--text-muted); font-size:12px;">—</span>`}</td>
                     <td><strong style="color:var(--danger)">${coutTotal.toFixed(2)} €</strong></td>
                     <td><strong style="color:var(--success)">${parseFloat(v.prix).toFixed(2)} €</strong>${v.promo > 0 ? `<br><span style="font-size:11px; color:var(--danger);">Promo : -${parseFloat(v.promo).toFixed(0)}% ${v.sousTotal ? `(sous-total ${parseFloat(v.sousTotal).toFixed(2)} €)` : ''}</span>` : ''}</td>
                     <td><strong style="color:${marge >= 0 ? 'var(--success)' : 'var(--danger)'}">${marge.toFixed(2)} €</strong></td>
