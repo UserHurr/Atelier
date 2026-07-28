@@ -235,8 +235,19 @@
                         <label>Promo / Réduction sur cette commande (%)</label>
                         <input type="number" step="1" id="vente-promo" value="0" min="0" max="100" oninput="majRenduPanierVisuel()">
                     </div>
-                    <div style="margin-bottom:4px; font-size:13px; text-align:right; color:var(--text-muted);">Sous-total : <span id="sous-total-panier-txt">0.00 €</span></div>
-                    <div style="margin-bottom:12px; font-size:14px; text-align:right;">Total Commande (après promo) : <strong id="total-panier-txt" style="color:var(--text-color)">0.00 €</strong></div>
+                    <div style="font-size:13px; color:var(--text-muted); display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <span>Sous-total articles (avant promo)</span><span id="sous-total-panier-txt">0.00 €</span>
+                    </div>
+                    <div style="font-size:13px; color:var(--danger); display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span>Coût de revient total</span><span id="cout-revient-panier-txt">0.00 €</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Prix de vente final de la commande (€) — ajustable librement</label>
+                        <input type="number" step="0.01" id="vente-prix-final" min="0" oninput="prixFinalModifieManuellement=true; majBeneficeCommandePreview();">
+                    </div>
+                    <div style="font-size:15px; font-weight:700; display:flex; justify-content:space-between; margin-bottom:12px;">
+                        <span>Bénéfice de la commande</span><span id="benefice-panier-txt" style="color:var(--success)">0.00 €</span>
+                    </div>
 
                     <button type="button" id="btn-valider-commande" onclick="validerTouteLaCommande(event)">Enregistrer la commande globale</button>
                 </form>
@@ -817,18 +828,23 @@
         majRenduPanierVisuel();
     }
 
+    let prixFinalModifieManuellement = false;
+
     function majRenduPanierVisuel() {
-        const box = document.getElementById('liste-panier-encours'); box.innerHTML = ''; let total = 0;
+        const box = document.getElementById('liste-panier-encours'); box.innerHTML = ''; let total = 0; let coutTotal = 0;
         const promo = parseFloat(document.getElementById('vente-promo').value) || 0;
         if(panierTemporaire.length === 0) {
             box.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">Aucun produit sélectionné.</span>`;
             document.getElementById('sous-total-panier-txt').innerText = "0.00 €";
-            document.getElementById('total-panier-txt').innerText = "0.00 €"; return;
+            if(!prixFinalModifieManuellement) document.getElementById('vente-prix-final').value = '';
+            majBeneficeCommandePreview();
+            return;
         }
         panierTemporaire.forEach((item, idx) => {
             const qte = item.quantite || 1;
             const ligneTotal = item.prix * qte;
             total += ligneTotal;
+            coutTotal += (item.cout || 0) * qte;
             box.innerHTML += `
                 <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:5px; border-bottom:1px solid var(--border); padding-bottom:5px;">
                     <span>• <strong>${escapeHtml(item.produit)}</strong>${qte > 1 ? ` x${qte}` : ''} <br>
@@ -838,7 +854,20 @@
         });
         const totalApresPromo = Math.max(0, total * (1 - promo / 100));
         document.getElementById('sous-total-panier-txt').innerText = total.toFixed(2) + " €";
-        document.getElementById('total-panier-txt').innerText = totalApresPromo.toFixed(2) + " €";
+        if(!prixFinalModifieManuellement) {
+            document.getElementById('vente-prix-final').value = totalApresPromo.toFixed(2);
+        }
+        majBeneficeCommandePreview();
+    }
+
+    function majBeneficeCommandePreview() {
+        const coutTotal = panierTemporaire.reduce((sum, item) => sum + (item.cout || 0) * (item.quantite || 1), 0);
+        const prixFinal = parseFloat(document.getElementById('vente-prix-final').value) || 0;
+        const benefice = prixFinal - coutTotal;
+        document.getElementById('cout-revient-panier-txt').innerText = coutTotal.toFixed(2) + " €";
+        const el = document.getElementById('benefice-panier-txt');
+        el.innerText = benefice.toFixed(2) + " €";
+        el.style.color = benefice >= 0 ? 'var(--success)' : 'var(--danger)';
     }
 
     function retirerDuPanierTemporaire(idx) { panierTemporaire.splice(idx, 1); majRenduPanierVisuel(); }
@@ -853,7 +882,7 @@
 
         const sousTotal = panierTemporaire.reduce((sum, item) => sum + item.prix * (item.quantite || 1), 0);
         const promo = parseFloat(document.getElementById('vente-promo').value) || 0;
-        const totalFacture = Math.max(0, sousTotal * (1 - promo / 100));
+        const totalFacture = Math.max(0, parseFloat(document.getElementById('vente-prix-final').value) || 0);
         const date = document.getElementById('vente-date').value;
         const dateLivraison = document.getElementById('vente-date-livraison').value;
         const statut = document.getElementById('vente-statut').value;
@@ -876,6 +905,7 @@
             document.getElementById('vente-date').value = codeAujourdhui;
             document.getElementById('vente-date-livraison').value = codeAujourdhui;
             document.getElementById('vente-promo').value = 0;
+            prixFinalModifieManuellement = false;
             majRenduPanierVisuel();
         }
         recalculerTout();
@@ -897,7 +927,10 @@
         document.getElementById('vente-statut').value = v.statut;
         document.getElementById('vente-promo').value = v.promo || 0;
         panierTemporaire = v.articles ? JSON.parse(JSON.stringify(v.articles)) : [];
+        prixFinalModifieManuellement = true;
         majRenduPanierVisuel();
+        document.getElementById('vente-prix-final').value = parseFloat(v.prix).toFixed(2);
+        majBeneficeCommandePreview();
 
         const banner = document.getElementById('edit-mode-banner');
         banner.style.display = 'flex';
@@ -915,6 +948,7 @@
         document.getElementById('vente-date-livraison').value = codeAujourdhui;
         document.getElementById('vente-statut').value = 'En cours';
         document.getElementById('vente-promo').value = 0;
+        prixFinalModifieManuellement = false;
         majRenduPanierVisuel();
         document.getElementById('edit-mode-banner').style.display = 'none';
         document.getElementById('btn-valider-commande').innerText = 'Enregistrer la commande globale';
