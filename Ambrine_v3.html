@@ -439,62 +439,62 @@
     ];
 
     let achats = JSON.parse(localStorage.getItem('achats_v9')) || [
-        { id: 1, date: dateSeed, produit: "Farine", quantite: 1, cout: 0.65, categorie: "Coût Production" },
-        { id: 2, date: dateSeed, produit: "Sucre", quantite: 1, cout: 0.79, categorie: "Coût Production" },
-        { id: 3, date: dateSeed, produit: "Levure boulangère", quantite: 1, cout: 0.69, categorie: "Coût Production" },
-        { id: 4, date: dateSeed, produit: "Lait en poudre", quantite: 1, cout: 3.16, categorie: "Coût Production" },
-        { id: 5, date: dateSeed, produit: "Colorant en poudre", quantite: 1, cout: 3.75, categorie: "Coût Production" },
-        { id: 6, date: dateSeed, produit: "Graine de sésame blanche", quantite: 1, cout: 1.70, categorie: "Coût Production" },
-        { id: 7, date: dateSeed, produit: "Graine de sésame noir", quantite: 1, cout: 2.00, categorie: "Coût Production" },
-        { id: 8, date: dateSeed, produit: "Graine de pavot", quantite: 1, cout: 3.35, categorie: "Coût Production" },
-        { id: 9, date: dateSeed, produit: "Huile d'olive", quantite: 1, cout: 8.00, categorie: "Coût Production" },
-        { id: 10, date: dateSeed, produit: "Oeufs", quantite: 1, cout: 0.22, categorie: "Coût Production" },
-        { id: 11, date: dateSeed, produit: "Courgettes", quantite: 1, cout: 0.50, categorie: "Coût Production" },
-        { id: 12, date: dateSeed, produit: "Pesto rosso", quantite: 1, cout: 2.09, categorie: "Coût Production" },
-        { id: 13, date: dateSeed, produit: "Mozzarella", quantite: 1, cout: 0.93, categorie: "Coût Production" },
-        { id: 14, date: dateSeed, produit: "Poivrons grillés (bocal)", quantite: 1, cout: 1.90, categorie: "Coût Production" },
-        { id: 15, date: dateSeed, produit: "Papier sulfurisé", quantite: 1, cout: 1.00, categorie: "Coût Production" },
-        { id: 16, date: dateSeed, produit: "Viande hachée", quantite: 1, cout: 12.00, categorie: "Coût Production" },
-        { id: 17, date: dateSeed, produit: "Cheddar tranché (Kraft)", quantite: 1, cout: 2.59, categorie: "Coût Production" },
-        { id: 18, date: dateSeed, produit: "Mini pique", quantite: 1, cout: 1.75, categorie: "Coût Production" },
-        { id: 19, date: dateSeed, produit: "Salade", quantite: 1, cout: 1.30, categorie: "Coût Production" },
-        { id: 20, date: dateSeed, produit: "Sauce burger", quantite: 1, cout: 1.39, categorie: "Coût Production" },
-        { id: 21, date: dateSeed, produit: "Cornichons", quantite: 1, cout: 0.95, categorie: "Coût Production" },
-        { id: 22, date: dateSeed, produit: "Fromage frais", quantite: 1, cout: 1.79, categorie: "Coût Production" },
-        { id: 23, date: dateSeed, produit: "Mini concombre (tranches)", quantite: 1, cout: 1.79, categorie: "Coût Production" },
-        { id: 24, date: dateSeed, produit: "Saumon", quantite: 1, cout: 4.49, categorie: "Coût Production" },
-        { id: 25, date: dateSeed, produit: "Escalopes de poulet", quantite: 1, cout: 8.85, categorie: "Coût Production" },
-        { id: 26, date: dateSeed, produit: "Barquette", quantite: 1, cout: 2.80, categorie: "Coût Production" },
-        { id: 27, date: dateSeed, produit: "Sriracha mayo", quantite: 1, cout: 3.60, categorie: "Coût Production" },
-        { id: 28, date: dateSeed, produit: "Sauce aigre douce", quantite: 1, cout: 1.60, categorie: "Coût Production" },
-        { id: 29, date: dateSeed, produit: "Mayonnaise", quantite: 1, cout: 1.38, categorie: "Coût Production" },
-        { id: 30, date: dateSeed, produit: "Lamelle de citron vert", quantite: 1, cout: 0.40, categorie: "Coût Production" },
-        { id: 31, date: dateSeed, produit: "Fleur comestible", quantite: 1, cout: 2.99, categorie: "Coût Production" },
-        { id: 32, date: dateSeed, produit: "Palets bretons", quantite: 1, cout: 0.95, categorie: "Coût Production" },
-        { id: 33, date: dateSeed, produit: "Mascarpone", quantite: 1, cout: 3.20, categorie: "Coût Production" },
-        { id: 34, date: dateSeed, produit: "Crème liquide", quantite: 1, cout: 1.70, categorie: "Coût Production" },
-        { id: 35, date: dateSeed, produit: "Sucre glace", quantite: 1, cout: 1.21, categorie: "Coût Production" },
-        { id: 36, date: dateSeed, produit: "Fruits rouges (coulis)", quantite: 1, cout: 4.89, categorie: "Coût Production" },
-        { id: 37, date: dateSeed, produit: "Contenant verrine", quantite: 1, cout: 4.32, categorie: "Coût Production" },
-        { id: 38, date: dateSeed, produit: "Fromage blanc", quantite: 1, cout: 1.20, categorie: "Coût Production" },
-        { id: 39, date: dateSeed, produit: "Huile de tournesol", quantite: 1, cout: 1.80, categorie: "Coût Production" },
-        { id: 40, date: dateSeed, produit: "Beurre", quantite: 1, cout: 1.80, categorie: "Coût Production" },
-        { id: 41, date: dateSeed, produit: "Sauce sriracha (nature)", quantite: 1, cout: 3.50, categorie: "Coût Production" },
-        { id: 42, date: dateSeed, produit: "Sirop d'agave", quantite: 1, cout: 4.50, categorie: "Coût Production" },
-        { id: 43, date: dateSeed, produit: "Pickles d'oignons", quantite: 1, cout: 2.50, categorie: "Coût Production" },
-        { id: 44, date: dateSeed, produit: "Sel", quantite: 1, cout: 0.80, categorie: "Coût Production" },
-        { id: 45, date: dateSeed, produit: "Moutarde", quantite: 1, cout: 1.70, categorie: "Coût Production" },
-        { id: 46, date: dateSeed, produit: "Ketchup", quantite: 1, cout: 0.85, categorie: "Coût Production" },
-        { id: 47, date: dateSeed, produit: "Tortilla de blé", quantite: 1, cout: 1.95, categorie: "Coût Production" },
-        { id: 48, date: dateSeed, produit: "Ficelle cuisine", quantite: 1, cout: 2.50, categorie: "Coût Production" },
-        { id: 49, date: dateSeed, produit: "Fond de tartelette 3.8cm", quantite: 1, cout: 47.50, categorie: "Coût Production" },
-        { id: 50, date: dateSeed, produit: "Chèvre frais", quantite: 1, cout: 1.89, categorie: "Coût Production" },
-        { id: 51, date: dateSeed, produit: "Noix (cerneaux)", quantite: 1, cout: 1.86, categorie: "Coût Production" },
-        { id: 52, date: dateSeed, produit: "Oignon", quantite: 1, cout: 2.00, categorie: "Coût Production" },
-        { id: 53, date: dateSeed, produit: "Avocat", quantite: 1, cout: 1.00, categorie: "Coût Production" },
-        { id: 54, date: dateSeed, produit: "Crème légère", quantite: 1, cout: 1.20, categorie: "Coût Production" },
-        { id: 55, date: dateSeed, produit: "Jus de citron", quantite: 1, cout: 1.50, categorie: "Coût Production" },
-        { id: 56, date: dateSeed, produit: "Crevettes", quantite: 1, cout: 25.00, categorie: "Coût Production" }
+        { id: 1, date: dateSeed, produit: "Farine", quantite: 1, cout: 0.65, categorie: "Coût Production", seed: true },
+        { id: 2, date: dateSeed, produit: "Sucre", quantite: 1, cout: 0.79, categorie: "Coût Production", seed: true },
+        { id: 3, date: dateSeed, produit: "Levure boulangère", quantite: 1, cout: 0.69, categorie: "Coût Production", seed: true },
+        { id: 4, date: dateSeed, produit: "Lait en poudre", quantite: 1, cout: 3.16, categorie: "Coût Production", seed: true },
+        { id: 5, date: dateSeed, produit: "Colorant en poudre", quantite: 1, cout: 3.75, categorie: "Coût Production", seed: true },
+        { id: 6, date: dateSeed, produit: "Graine de sésame blanche", quantite: 1, cout: 1.70, categorie: "Coût Production", seed: true },
+        { id: 7, date: dateSeed, produit: "Graine de sésame noir", quantite: 1, cout: 2.00, categorie: "Coût Production", seed: true },
+        { id: 8, date: dateSeed, produit: "Graine de pavot", quantite: 1, cout: 3.35, categorie: "Coût Production", seed: true },
+        { id: 9, date: dateSeed, produit: "Huile d'olive", quantite: 1, cout: 8.00, categorie: "Coût Production", seed: true },
+        { id: 10, date: dateSeed, produit: "Oeufs", quantite: 1, cout: 0.22, categorie: "Coût Production", seed: true },
+        { id: 11, date: dateSeed, produit: "Courgettes", quantite: 1, cout: 0.50, categorie: "Coût Production", seed: true },
+        { id: 12, date: dateSeed, produit: "Pesto rosso", quantite: 1, cout: 2.09, categorie: "Coût Production", seed: true },
+        { id: 13, date: dateSeed, produit: "Mozzarella", quantite: 1, cout: 0.93, categorie: "Coût Production", seed: true },
+        { id: 14, date: dateSeed, produit: "Poivrons grillés (bocal)", quantite: 1, cout: 1.90, categorie: "Coût Production", seed: true },
+        { id: 15, date: dateSeed, produit: "Papier sulfurisé", quantite: 1, cout: 1.00, categorie: "Coût Production", seed: true },
+        { id: 16, date: dateSeed, produit: "Viande hachée", quantite: 1, cout: 12.00, categorie: "Coût Production", seed: true },
+        { id: 17, date: dateSeed, produit: "Cheddar tranché (Kraft)", quantite: 1, cout: 2.59, categorie: "Coût Production", seed: true },
+        { id: 18, date: dateSeed, produit: "Mini pique", quantite: 1, cout: 1.75, categorie: "Coût Production", seed: true },
+        { id: 19, date: dateSeed, produit: "Salade", quantite: 1, cout: 1.30, categorie: "Coût Production", seed: true },
+        { id: 20, date: dateSeed, produit: "Sauce burger", quantite: 1, cout: 1.39, categorie: "Coût Production", seed: true },
+        { id: 21, date: dateSeed, produit: "Cornichons", quantite: 1, cout: 0.95, categorie: "Coût Production", seed: true },
+        { id: 22, date: dateSeed, produit: "Fromage frais", quantite: 1, cout: 1.79, categorie: "Coût Production", seed: true },
+        { id: 23, date: dateSeed, produit: "Mini concombre (tranches)", quantite: 1, cout: 1.79, categorie: "Coût Production", seed: true },
+        { id: 24, date: dateSeed, produit: "Saumon", quantite: 1, cout: 4.49, categorie: "Coût Production", seed: true },
+        { id: 25, date: dateSeed, produit: "Escalopes de poulet", quantite: 1, cout: 8.85, categorie: "Coût Production", seed: true },
+        { id: 26, date: dateSeed, produit: "Barquette", quantite: 1, cout: 2.80, categorie: "Coût Production", seed: true },
+        { id: 27, date: dateSeed, produit: "Sriracha mayo", quantite: 1, cout: 3.60, categorie: "Coût Production", seed: true },
+        { id: 28, date: dateSeed, produit: "Sauce aigre douce", quantite: 1, cout: 1.60, categorie: "Coût Production", seed: true },
+        { id: 29, date: dateSeed, produit: "Mayonnaise", quantite: 1, cout: 1.38, categorie: "Coût Production", seed: true },
+        { id: 30, date: dateSeed, produit: "Lamelle de citron vert", quantite: 1, cout: 0.40, categorie: "Coût Production", seed: true },
+        { id: 31, date: dateSeed, produit: "Fleur comestible", quantite: 1, cout: 2.99, categorie: "Coût Production", seed: true },
+        { id: 32, date: dateSeed, produit: "Palets bretons", quantite: 1, cout: 0.95, categorie: "Coût Production", seed: true },
+        { id: 33, date: dateSeed, produit: "Mascarpone", quantite: 1, cout: 3.20, categorie: "Coût Production", seed: true },
+        { id: 34, date: dateSeed, produit: "Crème liquide", quantite: 1, cout: 1.70, categorie: "Coût Production", seed: true },
+        { id: 35, date: dateSeed, produit: "Sucre glace", quantite: 1, cout: 1.21, categorie: "Coût Production", seed: true },
+        { id: 36, date: dateSeed, produit: "Fruits rouges (coulis)", quantite: 1, cout: 4.89, categorie: "Coût Production", seed: true },
+        { id: 37, date: dateSeed, produit: "Contenant verrine", quantite: 1, cout: 4.32, categorie: "Coût Production", seed: true },
+        { id: 38, date: dateSeed, produit: "Fromage blanc", quantite: 1, cout: 1.20, categorie: "Coût Production", seed: true },
+        { id: 39, date: dateSeed, produit: "Huile de tournesol", quantite: 1, cout: 1.80, categorie: "Coût Production", seed: true },
+        { id: 40, date: dateSeed, produit: "Beurre", quantite: 1, cout: 1.80, categorie: "Coût Production", seed: true },
+        { id: 41, date: dateSeed, produit: "Sauce sriracha (nature)", quantite: 1, cout: 3.50, categorie: "Coût Production", seed: true },
+        { id: 42, date: dateSeed, produit: "Sirop d'agave", quantite: 1, cout: 4.50, categorie: "Coût Production", seed: true },
+        { id: 43, date: dateSeed, produit: "Pickles d'oignons", quantite: 1, cout: 2.50, categorie: "Coût Production", seed: true },
+        { id: 44, date: dateSeed, produit: "Sel", quantite: 1, cout: 0.80, categorie: "Coût Production", seed: true },
+        { id: 45, date: dateSeed, produit: "Moutarde", quantite: 1, cout: 1.70, categorie: "Coût Production", seed: true },
+        { id: 46, date: dateSeed, produit: "Ketchup", quantite: 1, cout: 0.85, categorie: "Coût Production", seed: true },
+        { id: 47, date: dateSeed, produit: "Tortilla de blé", quantite: 1, cout: 1.95, categorie: "Coût Production", seed: true },
+        { id: 48, date: dateSeed, produit: "Ficelle cuisine", quantite: 1, cout: 2.50, categorie: "Coût Production", seed: true },
+        { id: 49, date: dateSeed, produit: "Fond de tartelette 3.8cm", quantite: 1, cout: 47.50, categorie: "Coût Production", seed: true },
+        { id: 50, date: dateSeed, produit: "Chèvre frais", quantite: 1, cout: 1.89, categorie: "Coût Production", seed: true },
+        { id: 51, date: dateSeed, produit: "Noix (cerneaux)", quantite: 1, cout: 1.86, categorie: "Coût Production", seed: true },
+        { id: 52, date: dateSeed, produit: "Oignon", quantite: 1, cout: 2.00, categorie: "Coût Production", seed: true },
+        { id: 53, date: dateSeed, produit: "Avocat", quantite: 1, cout: 1.00, categorie: "Coût Production", seed: true },
+        { id: 54, date: dateSeed, produit: "Crème légère", quantite: 1, cout: 1.20, categorie: "Coût Production", seed: true },
+        { id: 55, date: dateSeed, produit: "Jus de citron", quantite: 1, cout: 1.50, categorie: "Coût Production", seed: true },
+        { id: 56, date: dateSeed, produit: "Crevettes", quantite: 1, cout: 25.00, categorie: "Coût Production", seed: true }
     ];
     let ventes = JSON.parse(localStorage.getItem('ventes_v9')) || [];
     let catalogue = JSON.parse(localStorage.getItem('catalogue_v9')) || [
@@ -1005,7 +1005,7 @@
     function recalculerTout() {
         let ca = 0, depenses = 0, inv = 0, prod = 0, frais = 0;
         ventes.forEach(v => ca += parseFloat(v.prix));
-        achats.forEach(a => {
+        achats.filter(a => !a.seed).forEach(a => {
             let totalLigne = parseFloat(a.cout) * parseInt(a.quantite); depenses += totalLigne;
             if(a.categorie === "Investissement") inv += totalLigne;
             else if(a.categorie === "Coût Production") prod += totalLigne;
@@ -1108,7 +1108,7 @@
         });
 
         const tbodyA = document.querySelector('#table-achats tbody'); tbodyA.innerHTML = '';
-        achats.slice().reverse().forEach(a => {
+        achats.filter(a => !a.seed).slice().reverse().forEach(a => {
             let total = parseFloat(a.cout) * parseInt(a.quantite);
             tbodyA.innerHTML += `
                 <tr id="achat-${a.id}">
