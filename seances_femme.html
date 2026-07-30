@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -93,7 +92,13 @@
     .warmup-box {
       background: #fce7f3; border-left: 4px solid var(--primary);
       padding: 12px; border-radius: 8px; font-size: 0.88rem; margin-bottom: 14px;
-      line-height: 1.4; color: #831843;
+      line-height: 1.5; color: #831843;
+    }
+
+    .finisher-box {
+      background: #f0fdf4; border-left: 4px solid #22c55e;
+      padding: 12px; border-radius: 8px; font-size: 0.88rem; margin-top: 14px;
+      line-height: 1.5; color: #15803d; font-weight: 600;
     }
 
     .btn-del {
@@ -109,10 +114,10 @@
 </head>
 <body>
 
-  <h1>🌸  Ambrine’s Workout Plan 🌸</h1>
+  <h1>🌸 Pink Fitness Tracker</h1>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab(event, 'workout')">🏋️ Saisir Perf</button>
+    <button class="tab-btn active" onclick="switchTab(event, 'workout')">🏋️‍♀️ Saisir Perf</button>
     <button class="tab-btn" onclick="switchTab(event, 'program')">📖 Programme</button>
     <button class="tab-btn" onclick="switchTab(event, 'history')">📊 Historique</button>
   </div>
@@ -120,7 +125,7 @@
   <!-- TAB 1 : LOG SÉANCE & AUTO-PROGRESSION -->
   <div id="workout" class="tab-content active">
     <div class="card">
-      <h2>1. Sélectionner la Séance</h2>
+      <h2>1. Sélectionner la Séance 🧘‍♀️</h2>
       <label for="selectDay">Séance du jour</label>
       <select id="selectDay" onchange="updateWorkoutForm()">
         <option value="S1">Séance 1 : Bas du Corps (Fentes, Presse, Quadri, Mollets)</option>
@@ -132,12 +137,12 @@
     <div id="warmupDisplay" class="warmup-box"></div>
 
     <div class="card">
-      <h2>2. Saisir la Performance</h2>
+      <h2>2. Saisir la Performance 🏋️‍♀️</h2>
       <form id="logForm">
-        <label for="date">Date</label>
+        <label for="date">📅 Date</label>
         <input type="date" id="date" required>
 
-        <label for="selectExo">Exercice à enregistrer</label>
+        <label for="selectExo">💪 Exercice à enregistrer</label>
         <select id="selectExo" onchange="calculateRecommendation()"></select>
 
         <div id="exoDetails" style="font-size: 0.85rem; color: var(--text-sub); margin-top: 6px;"></div>
@@ -148,25 +153,27 @@
 
         <div style="display:flex; gap:8px; margin-top: 8px;">
           <div style="flex:1;">
-            <label for="poids">Charge (kg)</label>
+            <label for="poids">🏋️‍♀️ Charge (kg)</label>
             <input type="number" id="poids" step="0.5" placeholder="ex: 35" required>
           </div>
           <div style="flex:1;">
-            <label for="reps">Reps faites</label>
+            <label for="reps">🔢 Reps faites</label>
             <input type="number" id="reps" placeholder="ex: 10" required>
           </div>
           <div style="flex:1;">
-            <label for="rpe">RPE (1-10)</label>
+            <label for="rpe">🔥 RPE (1-10)</label>
             <input type="number" id="rpe" min="1" max="10" step="0.5" placeholder="ex: 8" required>
           </div>
         </div>
 
-        <label for="notes">Notes / Sensations</label>
+        <label for="notes">✨ Notes / Sensations</label>
         <textarea id="notes" rows="2" placeholder="ex: Bonne amplitude, charge fluide..."></textarea>
 
         <button type="submit" class="btn-main">💖 Enregistrer la Série</button>
       </form>
     </div>
+
+    <div id="finisherDisplay" class="finisher-box"></div>
   </div>
 
   <!-- TAB 2 : VISUALISATION COMPLÈTE DU PROGRAMME -->
@@ -211,33 +218,36 @@
     const PROGRAM_DATA = {
       S1: {
         title: "Séance 1 : Bas du Corps (Quads / Fessiers / Mollets)",
-        warmup: "<b>🔥 Échauffement Bas du Corps :</b><br>• Vélo ou Tapis : 3 minutes légères.<br>• Circuit (2 à 3 tours) : Squat goblet (respirer en squat profond), Corde à sauter, Gainage (30 sec), Mobilisation hanches.",
+        warmup: "<b>🔥 Échauffement Bas du Corps :</b><br>• Circuit (2 à 3 tours) : Squat goblet (respirer en squat profond), Corde à sauter (30 sec), Gainage (30 sec), Mobilisation hanches.<br>• <b>Montée en gamme :</b> 1 à 2 séries légères d'échauffement sur le premier exercice avant de charger.",
+        finisher: "<b>🧘‍♀️ Bonus fin de séance :</b> Suivre vidéo abdos.",
         exos: [
-          { name: "Fentes bulgares", target: "3 x 8-10 reps/jambe", rpe: "RPE 8", rest: "1 min 30" },
-          { name: "Presse à cuisses", target: "3 x 10-12 reps", rpe: "RPE 8", rest: "1 min 30" },
-          { name: "Machine quadri (Leg Extension)", target: "3 x 12-15 reps", rpe: "RPE 8.5", rest: "1 min 15" },
-          { name: "Extension mollet", target: "3 x 12-15 reps", rpe: "RPE 8.5", rest: "1 min" }
+          { name: "Fentes bulgares", target: "3 x 8-10 reps/jambe", rpe: "RPE 8", rest: "2 min 30" },
+          { name: "Presse à cuisses", target: "3 x 10-12 reps", rpe: "RPE 8", rest: "2 min 30" },
+          { name: "Machine quadri (Leg Extension)", target: "3 x 12-15 reps", rpe: "RPE 8.5", rest: "1 min 30" },
+          { name: "Extension mollet", target: "3 x 12-15 reps", rpe: "RPE 8.5", rest: "1 min 30" }
         ]
       },
       S2: {
         title: "Séance 2 : Haut du Corps (Dos / Épaules / Pectoraux)",
-        warmup: "<b>🔥 Échauffement Haut du Corps :</b><br>• Circuit (2 à 3 tours) : Mobilisation épaules à l'élastique, Pompes scapulaires, Mobilisation épaules avec petits haltères.",
+        warmup: "<b>🔥 Échauffement Haut du Corps :</b><br>• Circuit (2 à 3 tours) : Mobilisation épaules à l'élastique, Pompes scapulaires, Mobilisation épaules avec petits haltères.<br>• <b>Montée en gamme :</b> 1 à 2 séries légères d'échauffement avant les séries effectives.",
+        finisher: "<b>🏃‍♀️ Finisher Cardio :</b> Cardio 20 min minimum.",
         exos: [
-          { name: "Tirage vertical", target: "3 x 8-10 reps", rpe: "RPE 8", rest: "1 min 30" },
-          { name: "Tirage horizontal", target: "3 x 10-12 reps", rpe: "RPE 8", rest: "1 min 30" },
-          { name: "Développé militaire debout", target: "3 x 8-10 reps", rpe: "RPE 8", rest: "1 min 30" },
-          { name: "Pompes + Exo élastique", target: "3 x 10-12 reps", rpe: "RPE 8.5", rest: "1 min 15" }
+          { name: "Tirage vertical", target: "3 x 8-10 reps", rpe: "RPE 8", rest: "2 min 30" },
+          { name: "Tirage horizontal", target: "3 x 10-12 reps", rpe: "RPE 8", rest: "2 min 30" },
+          { name: "Développé militaire debout", target: "3 x 8-10 reps", rpe: "RPE 8", rest: "2 min 30" },
+          { name: "Pompes + Exo élastique", target: "3 x 10-12 reps", rpe: "RPE 8.5", rest: "1 min 30" }
         ]
       },
       S3: {
         title: "Séance 3 : Bas du Corps (Chaîne Postérieure & Unipodal)",
-        warmup: "<b>🔥 Échauffement Bas du Corps :</b><br>• Vélo ou Tapis : 3 minutes légères.<br>• Circuit (2 à 3 tours) : Squat goblet (respirer en squat profond), Corde à sauter, Gainage (30 sec), Mobilisation hanches.",
+        warmup: "<b>🔥 Échauffement Bas du Corps :</b><br>• Circuit (2 à 3 tours) : Squat goblet (respirer en squat profond), Corde à sauter (30 sec), Gainage (30 sec), Mobilisation hanches.<br>• <b>Montée en gamme :</b> 1 à 2 séries légères d'échauffement (notamment sur le SDT).",
+        finisher: "<b>🧘‍♀️ Bonus fin de séance :</b> Suivre vidéo abdos.",
         exos: [
-          { name: "Step up", target: "3 x 8-10 reps/jambe", rpe: "RPE 8", rest: "1 min 30" },
-          { name: "Soulevé de terre (SDT)", target: "3 x 8-10 reps", rpe: "RPE 8", rest: "2 min" },
-          { name: "Machine ischio (Leg Curl)", target: "3 x 10-12 reps", rpe: "RPE 8.5", rest: "1 min 15" },
-          { name: "Extension mollet", target: "3 x 12-15 reps", rpe: "RPE 8.5", rest: "1 min" },
-          { name: "Extension lombaire", target: "3 x 10-12 reps", rpe: "RPE 8", rest: "1 min 15" }
+          { name: "Step up", target: "3 x 8-10 reps/jambe", rpe: "RPE 8", rest: "2 min 30" },
+          { name: "Soulevé de terre (SDT)", target: "3 x 8-10 reps", rpe: "RPE 8", rest: "2 min 30" },
+          { name: "Machine ischio (Leg Curl)", target: "3 x 10-12 reps", rpe: "RPE 8.5", rest: "1 min 30" },
+          { name: "Extension mollet", target: "3 x 12-15 reps", rpe: "RPE 8.5", rest: "1 min 30" },
+          { name: "Extension lombaire", target: "3 x 10-12 reps", rpe: "RPE 8", rest: "1 min 30" }
         ]
       }
     };
@@ -295,6 +305,7 @@
         html += `
               </tbody>
             </table>
+            <div class="finisher-box">${sData.finisher}</div>
           </div>`;
       });
 
@@ -306,6 +317,7 @@
       const dayData = PROGRAM_DATA[dayKey];
 
       document.getElementById('warmupDisplay').innerHTML = dayData.warmup;
+      document.getElementById('finisherDisplay').innerHTML = dayData.finisher;
 
       const exoSelect = document.getElementById('selectExo');
       exoSelect.innerHTML = '';
@@ -474,5 +486,3 @@
   </script>
 </body>
 </html>
-
-```
