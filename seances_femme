@@ -1,19 +1,4 @@
-C'est ajouté ! Le bonus vidéo abdos ainsi que le cardio haut du corps sont intégrés dans l'application.
 
----
-
-### 📝 Ce qui a été rajouté :
-
-1. **Séance 1 & 3 (Bas du corps) :** Ajout de la section **"🧘‍♀️ Bonus fin de séance : Suivre vidéo abdos"**.
-2. **Séance 2 (Haut du corps) :** Ajout de la section **"🔥 Finisher Cardio : Cardio 20 min minimum"** (tapis, vélo, elliptique...).
-
----
-
-### 📱 Code HTML Corrigé & Mis à Jour (`seances_femme.html`)
-
-Remplace le contenu de ton fichier sur GitHub par ce code :
-
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
