@@ -2,8 +2,18 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Atelier Al Maida - Mode Beige v9</title>
+
+    <!-- PWA / iOS "Add to Home Screen" -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <meta name="theme-color" content="#c4a482">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Al Maida">
     <style>
         :root {
             --bg-color: #f9f8f6;       /* Crème très clair */
@@ -163,13 +173,29 @@
             h1 { font-size: 17px; }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+
+<!-- Écran PIN : bloque l'accès tant que le bon code n'est pas saisi -->
+<div id="pin-gate" style="position:fixed; inset:0; background:var(--bg-color); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:30px; max-width:320px; width:100%; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,0.08);">
+        <div style="font-size:40px; margin-bottom:10px;">🍽️</div>
+        <h2 style="border:none; padding:0; margin-bottom:15px;">Atelier Al Maida</h2>
+        <label>Code PIN</label>
+        <input type="password" inputmode="numeric" pattern="[0-9]*" id="pin-input" maxlength="8" placeholder="••••" style="text-align:center; letter-spacing:6px; font-size:22px;" autofocus>
+        <div id="pin-erreur" style="color:var(--danger); font-size:12px; margin:6px 0; display:none;">Code incorrect.</div>
+        <button type="button" onclick="verifierPin()" style="margin-top:10px;">Déverrouiller</button>
+    </div>
+</div>
 
 <div class="container">
     <header>
         <h1>Atelier Al Maida</h1>
-        <button class="clear-btn" onclick="reinitialiserDonnees()">Tout effacer</button>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <span id="sync-status" style="font-size:11px; color:var(--text-muted);"></span>
+            <button class="clear-btn" onclick="reinitialiserDonnees()">Tout effacer</button>
+        </div>
     </header>
 
     <div class="tabs">
@@ -411,6 +437,39 @@
 </div>
 
 <script>
+    // ===== CONFIGURATION SYNCHRO CLOUD (Supabase) =====
+    // Remplace ces deux valeurs par celles de ton projet Supabase (Project Settings > API).
+    // Si tu laisses SUPABASE_URL vide, l'appli fonctionne normalement en local (comme avant), sans synchro.
+    const SUPABASE_URL = "https://nwmcooyikbomkrjmksmg.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_vJ3kzYmm_ioSHQRRdjz3Ig_SmnbAtTi";
+
+    // Change ce code PIN (celui demandé à l'ouverture de l'appli).
+    const APP_PIN = "1234";
+
+    let supabaseClient = null;
+    let syncEnCours = false;
+    if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    // ===== ÉCRAN PIN =====
+    function verifierPin() {
+        const saisi = document.getElementById('pin-input').value;
+        if (saisi === APP_PIN) {
+            localStorage.setItem('pin_ok_v9', '1');
+            document.getElementById('pin-gate').style.display = 'none';
+        } else {
+            document.getElementById('pin-erreur').style.display = 'block';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('pin-input');
+        if (input) input.addEventListener('keydown', e => { if (e.key === 'Enter') verifierPin(); });
+        if (localStorage.getItem('pin_ok_v9') === '1') {
+            document.getElementById('pin-gate').style.display = 'none';
+        }
+    });
+
     // Configuration Base de Données Globale
     const dateSeed = new Date().toISOString().split('T')[0];
 
@@ -663,10 +722,9 @@
             { ingredient: "Contenant verrine", qte: 1 }
         ],
         "Verrines Saumon": [
-            { ingredient: "Avocat", qte: 0.1538 },
-            { ingredient: "Crème légère", qte: 1.154 },
-            { ingredient: "Jus de citron", qte: 1.154 },
-            { ingredient: "Fromage frais", qte: 30.769 },
+            { ingredient: "Avocat", qte: 0.3 },
+            { ingredient: "Fromage frais", qte: 16.76 },
+            { ingredient: "Citron jaune", qte: 0.0333 },
             { ingredient: "Saumon", qte: 20 },
             { ingredient: "Contenant verrine", qte: 1 }
         ]
@@ -1089,6 +1147,78 @@
     }
 
     // LOGIQUE DE CALCULS ET HISTORIQUES
+    // ===== SYNCHRO CLOUD =====
+    function majStatutSync(texte) {
+        const el = document.getElementById('sync-status');
+        if (el) el.innerText = texte;
+    }
+
+    async function chargerDepuisCloud() {
+        if (!supabaseClient) { majStatutSync('📴 Local uniquement'); return; }
+        majStatutSync('☁️ Synchronisation...');
+        try {
+            const requete = supabaseClient.from('atelier_data').select('payload').eq('id', 'main').single();
+            const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 6000));
+            const { data, error } = await Promise.race([requete, timeout]);
+            if (error && error.code !== 'PGRST116') throw error;
+            if (data && data.payload) {
+                const p = data.payload;
+                if (p.baseIngredients) baseIngredients = p.baseIngredients;
+                if (p.achats) achats = p.achats;
+                if (p.ventes) ventes = p.ventes;
+                if (p.catalogue) catalogue = p.catalogue;
+                if (p.recettes) recettes = p.recettes;
+                if (p.emballages) emballages = p.emballages;
+            }
+            majStatutSync('☁️ Synchronisé');
+        } catch (e) {
+            console.warn('Synchro cloud indisponible, utilisation des données locales.', e);
+            majStatutSync('⚠️ Hors ligne (données locales)');
+        }
+    }
+
+    let cloudPushChain = Promise.resolve();
+    function pousserVersCloud() {
+        if (!supabaseClient || syncEnCours) return;
+        // Chaîné : chaque envoi attend que le précédent soit terminé, pour garantir que le serveur
+        // reçoit les modifications dans le même ordre que sur l'appareil (évite qu'une suppression
+        // rapide après un ajout soit "annulée" par une requête plus lente arrivée en retard).
+        cloudPushChain = cloudPushChain.then(() => envoyerVersCloud());
+    }
+
+    async function envoyerVersCloud() {
+        try {
+            const payload = { baseIngredients, achats, ventes, catalogue, recettes, emballages };
+            const { error } = await supabaseClient.from('atelier_data').upsert({ id: 'main', payload: payload, updated_at: new Date().toISOString() });
+            if (error) throw error;
+            majStatutSync('☁️ Synchronisé');
+        } catch (e) {
+            console.warn('Échec de synchronisation cloud.', e);
+            majStatutSync('⚠️ Échec synchro');
+        }
+    }
+
+    function ecouterChangementsCloud() {
+        if (!supabaseClient) return;
+        supabaseClient.channel('atelier-sync')
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'atelier_data', filter: 'id=eq.main' }, (msg) => {
+                const p = msg.new && msg.new.payload;
+                if (!p) return;
+                syncEnCours = true;
+                if (p.baseIngredients) baseIngredients = p.baseIngredients;
+                if (p.achats) achats = p.achats;
+                if (p.ventes) ventes = p.ventes;
+                if (p.catalogue) catalogue = p.catalogue;
+                if (p.recettes) recettes = p.recettes;
+                if (p.emballages) emballages = p.emballages;
+                rafraichirTousLesSelects();
+                recalculerTout();
+                majStatutSync('☁️ Mis à jour (autre appareil)');
+                syncEnCours = false;
+            })
+            .subscribe();
+    }
+
     function recalculerTout() {
         let ca = 0, coutRevientTotal = 0;
         ventes.forEach(v => {
@@ -1108,6 +1238,7 @@
         localStorage.setItem('recettes_v9', JSON.stringify(recettes));
 
         majTablesVisuelles();
+        if (!syncEnCours) pousserVersCloud();
     }
 
     function editerAchatRow(id) {
@@ -1226,10 +1357,25 @@
         });
     }
 
-    function reinitialiserDonnees() { if(confirm("Ambrine, réinitialiser la v9 beige ?")) { localStorage.clear(); location.reload(); } }
+    function reinitialiserDonnees() {
+        if(!confirm("Ambrine, réinitialiser la v9 beige ? (efface aussi le cloud si la synchro est active)")) return;
+        localStorage.clear();
+        if (supabaseClient) {
+            supabaseClient.from('atelier_data').delete().eq('id', 'main').then(() => location.reload());
+        } else {
+            location.reload();
+        }
+    }
 
-    rafraichirTousLesSelects();
-    recalculerTout();
+    (async function initApp() {
+        rafraichirTousLesSelects();
+        syncEnCours = true;
+        await chargerDepuisCloud();
+        syncEnCours = false;
+        rafraichirTousLesSelects();
+        recalculerTout();
+        ecouterChangementsCloud();
+    })();
 </script>
 </body>
 </html>
