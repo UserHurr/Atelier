@@ -537,7 +537,8 @@
         { nom: "Avocat", type: "U", taillePaquet: 1, classe: "Ingrédient" },
         { nom: "Crème légère", type: "g", taillePaquet: 200, classe: "Ingrédient" },
         { nom: "Jus de citron", type: "ml", taillePaquet: 250, classe: "Ingrédient" },
-        { nom: "Crevettes", type: "g", taillePaquet: 1000, classe: "Ingrédient" }
+        { nom: "Crevettes", type: "g", taillePaquet: 1000, classe: "Ingrédient" },
+        { nom: "Citron jaune", type: "U", taillePaquet: 1, classe: "Ingrédient" }
     ];
 
     let achats = JSON.parse(localStorage.getItem('achats_v9')) || [
@@ -593,10 +594,11 @@
         { id: 50, date: dateSeed, produit: "Chèvre frais", quantite: 1, cout: 1.89, categorie: "Coût Production", seed: true },
         { id: 51, date: dateSeed, produit: "Noix (cerneaux)", quantite: 1, cout: 1.86, categorie: "Coût Production", seed: true },
         { id: 52, date: dateSeed, produit: "Oignon", quantite: 1, cout: 2.00, categorie: "Coût Production", seed: true },
-        { id: 53, date: dateSeed, produit: "Avocat", quantite: 1, cout: 1.00, categorie: "Coût Production", seed: true },
+        { id: 53, date: dateSeed, produit: "Avocat", quantite: 1, cout: 1.75, categorie: "Coût Production", seed: true },
         { id: 54, date: dateSeed, produit: "Crème légère", quantite: 1, cout: 1.20, categorie: "Coût Production", seed: true },
         { id: 55, date: dateSeed, produit: "Jus de citron", quantite: 1, cout: 1.50, categorie: "Coût Production", seed: true },
-        { id: 56, date: dateSeed, produit: "Crevettes", quantite: 1, cout: 25.00, categorie: "Coût Production", seed: true }
+        { id: 56, date: dateSeed, produit: "Crevettes", quantite: 1, cout: 24.50, categorie: "Coût Production", seed: true },
+        { id: 57, date: dateSeed, produit: "Citron jaune", quantite: 1, cout: 0.50, categorie: "Coût Production", seed: true }
     ];
     let ventes = JSON.parse(localStorage.getItem('ventes_v9')) || [
         {
@@ -658,7 +660,7 @@
                 { produit: "Mini Focaccia", prix: 1.80, cout: 0.34, quantite: 30 },
                 { produit: "Navette Saumon", prix: 1.80, cout: 0.742, quantite: 30 },
                 { produit: "Verrines Crevettes", prix: 1.60, cout: 0.983, quantite: 30 },
-                { produit: "Verrines Saumon", prix: 1.70, cout: 0.95, quantite: 30 }
+                { produit: "Verrines Saumon", prix: 1.70, cout: 1.187, quantite: 30 }
             ]
         },
         {
@@ -784,11 +786,10 @@
             { ingredient: "Oignon", qte: 5 }
         ],
         "Verrines Crevettes": [
-            { ingredient: "Avocat", qte: 0.1538 },
-            { ingredient: "Crème légère", qte: 1.154 },
-            { ingredient: "Jus de citron", qte: 1.154 },
-            { ingredient: "Fromage frais", qte: 30.769 },
-            { ingredient: "Crevettes", qte: 20 },
+            { ingredient: "Avocat", qte: 0.3 },
+            { ingredient: "Fromage frais", qte: 16.76 },
+            { ingredient: "Citron jaune", qte: 0.0333 },
+            { ingredient: "Crevettes", qte: 10 },
             { ingredient: "Contenant verrine", qte: 1 }
         ],
         "Verrines Saumon": [
