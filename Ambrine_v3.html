@@ -216,7 +216,11 @@
         <div class="main-grid">
             <!-- Formulaire Vente -->
             <div class="card">
-                <h2>+ Enregistrer une Vente</h2>
+                <h2 onclick="toggleFormVente()" style="cursor:pointer; user-select:none; display:flex; justify-content:space-between; align-items:center;">
+                    <span>+ Enregistrer une commande</span>
+                    <span id="toggle-form-vente-icon" style="color:var(--accent);">▸</span>
+                </h2>
+                <div id="vente-form-wrapper" style="display:none;">
                 <div id="edit-mode-banner" style="display:none; background: var(--blue); color: var(--text-color); padding:10px 12px; border-radius:6px; margin-bottom:12px; font-size:13px; align-items:center; justify-content:space-between; gap:10px;">
                     <span id="edit-mode-text" style="font-weight:600;"></span>
                     <button type="button" onclick="annulerModificationVente()" style="width:auto; background:var(--text-muted); padding:6px 12px; font-size:12px; min-height:auto;">Annuler</button>
@@ -288,6 +292,7 @@
 
                     <button type="button" id="btn-valider-commande" onclick="validerTouteLaCommande(event)">Enregistrer la commande globale</button>
                 </form>
+                </div>
             </div>
         </div>
 
@@ -840,6 +845,14 @@
         evt.currentTarget.classList.add('active');
     }
 
+    function toggleFormVente(forcerOuvert) {
+        const wrapper = document.getElementById('vente-form-wrapper');
+        const icon = document.getElementById('toggle-form-vente-icon');
+        const ouvrir = forcerOuvert === true ? true : (wrapper.style.display === 'none');
+        wrapper.style.display = ouvrir ? 'block' : 'none';
+        icon.innerText = ouvrir ? '▾' : '▸';
+    }
+
     function toggleFormTypeEmballage() {
         const classe = document.getElementById('new-ing-classe').value;
         document.getElementById('div-mesures-conditionnement').style.display = (classe === "Emballage") ? "none" : "grid";
@@ -1102,6 +1115,7 @@
         document.getElementById('page-ops').classList.add('active');
         document.querySelector('.tab-btn').classList.add('active');
 
+        toggleFormVente(true);
         venteEnEdition = id;
         document.getElementById('vente-date').value = v.date;
         document.getElementById('vente-date-livraison').value = v.dateLivraison || v.date;
