@@ -213,6 +213,18 @@
             <div class="kpi-card"><div class="kpi-label">Bénéfice Net</div><div class="kpi-value" id="kpi-benefice" style="color: var(--text-color);">0,00 €</div></div>
         </div>
 
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>Chiffre d'Affaires & Bénéfice par mois</h2>
+            <div id="chart-mensuel-legend" style="display:flex; gap:18px; font-size:12px; color:var(--text-muted); margin-bottom:10px;">
+                <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:2px; background:var(--success); display:inline-block;"></span> Chiffre d'affaires</span>
+                <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:2px; background:var(--text-color); display:inline-block;"></span> Bénéfice</span>
+            </div>
+            <div id="chart-mensuel-wrap" style="overflow-x:auto;"></div>
+            <div class="table-container" style="max-height: 180px; margin-top:12px;">
+                <table id="table-mensuel"><thead><tr><th>Mois</th><th>Commandes</th><th>Chiffre d'affaires</th><th>Bénéfice</th></tr></thead><tbody></tbody></table>
+            </div>
+        </div>
+
         <div class="main-grid">
             <!-- Formulaire Vente -->
             <div class="card">
@@ -232,6 +244,10 @@
                     </div>
                     <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div><label>Client / Événement</label><input type="text" id="vente-client" placeholder="Nom de la cliente" required></div>
+                        <div><label>Téléphone du client</label><input type="tel" id="vente-telephone" placeholder="06 12 34 56 78"></div>
+                    </div>
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label>Adresse de livraison (si livraison)</label><input type="text" id="vente-adresse" placeholder="Adresse complète"></div>
                         <div>
                             <label>Statut initial</label>
                             <select id="vente-statut">
@@ -1081,22 +1097,27 @@
         const date = document.getElementById('vente-date').value;
         const dateLivraison = document.getElementById('vente-date-livraison').value;
         const statut = document.getElementById('vente-statut').value;
+        const telephone = document.getElementById('vente-telephone').value.trim();
+        const adresse = document.getElementById('vente-adresse').value.trim();
 
         if(venteEnEdition !== null) {
             const v = ventes.find(v => v.id === venteEnEdition);
             if(v) {
                 v.date = date; v.dateLivraison = dateLivraison; v.client = client;
                 v.statut = statut; v.prix = totalFacture; v.promo = promo; v.sousTotal = sousTotal;
-                v.articles = [...panierTemporaire];
+                v.articles = [...panierTemporaire]; v.telephone = telephone; v.adresseLivraison = adresse;
             }
             annulerModificationVente();
         } else {
             ventes.push({
                 id: Date.now(), date: date, dateLivraison: dateLivraison, client: client,
-                statut: statut, prix: totalFacture, promo: promo, sousTotal: sousTotal, articles: [...panierTemporaire]
+                statut: statut, prix: totalFacture, promo: promo, sousTotal: sousTotal, articles: [...panierTemporaire],
+                telephone: telephone, adresseLivraison: adresse
             });
             panierTemporaire = [];
             document.getElementById('vente-client').value = '';
+            document.getElementById('vente-telephone').value = '';
+            document.getElementById('vente-adresse').value = '';
             document.getElementById('vente-date').value = codeAujourdhui;
             document.getElementById('vente-date-livraison').value = codeAujourdhui;
             document.getElementById('vente-promo').value = 0;
@@ -1120,6 +1141,8 @@
         document.getElementById('vente-date').value = v.date;
         document.getElementById('vente-date-livraison').value = v.dateLivraison || v.date;
         document.getElementById('vente-client').value = v.client;
+        document.getElementById('vente-telephone').value = v.telephone || '';
+        document.getElementById('vente-adresse').value = v.adresseLivraison || '';
         document.getElementById('vente-statut').value = v.statut;
         document.getElementById('vente-promo').value = v.promo || 0;
         panierTemporaire = v.articles ? JSON.parse(JSON.stringify(v.articles)) : [];
@@ -1140,6 +1163,8 @@
         venteEnEdition = null;
         panierTemporaire = [];
         document.getElementById('vente-client').value = '';
+        document.getElementById('vente-telephone').value = '';
+        document.getElementById('vente-adresse').value = '';
         document.getElementById('vente-date').value = codeAujourdhui;
         document.getElementById('vente-date-livraison').value = codeAujourdhui;
         document.getElementById('vente-statut').value = 'En cours';
@@ -1323,7 +1348,71 @@
         localStorage.setItem('recettes_v9', JSON.stringify(recettes));
 
         majTablesVisuelles();
+        majGraphiqueMensuel();
         if (!syncEnCours) pousserVersCloud();
+    }
+
+    function moisLabel(ym) {
+        const [y, m] = ym.split('-');
+        const noms = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+        return noms[parseInt(m, 10) - 1] + ' ' + y;
+    }
+
+    function majGraphiqueMensuel() {
+        const parMois = {};
+        ventes.forEach(v => {
+            const ym = (v.date || '').slice(0, 7);
+            if (!ym) return;
+            if (!parMois[ym]) parMois[ym] = { ca: 0, benefice: 0, nb: 0 };
+            const coutTotal = v.articles ? v.articles.reduce((s, a) => s + (parseFloat(a.cout) || 0) * (a.quantite || 1), 0) : 0;
+            parMois[ym].ca += parseFloat(v.prix) || 0;
+            parMois[ym].benefice += (parseFloat(v.prix) || 0) - coutTotal;
+            parMois[ym].nb += 1;
+        });
+        const moisTries = Object.keys(parMois).sort();
+
+        const tbody = document.querySelector('#table-mensuel tbody');
+        tbody.innerHTML = '';
+        moisTries.slice().reverse().forEach(ym => {
+            const d = parMois[ym];
+            tbody.innerHTML += `<tr><td><strong>${moisLabel(ym)}</strong></td><td>${d.nb}</td><td style="color:var(--success)"><strong>${d.ca.toFixed(2)} €</strong></td><td style="color:${d.benefice >= 0 ? 'var(--text-color)' : 'var(--danger)'}"><strong>${d.benefice.toFixed(2)} €</strong></td></tr>`;
+        });
+
+        const wrap = document.getElementById('chart-mensuel-wrap');
+        if (moisTries.length === 0) {
+            wrap.innerHTML = `<div style="color:var(--text-muted); font-size:13px; padding:20px; text-align:center;">Aucune donnée pour l'instant.</div>`;
+            return;
+        }
+
+        const maxVal = Math.max(1, ...moisTries.map(ym => Math.max(parMois[ym].ca, parMois[ym].benefice)));
+        const chartH = 200, barW = 24, gapInGroup = 4, gapGroup = 30, padLeft = 46, padBottom = 30, padTop = 14;
+        const groupW = barW * 2 + gapInGroup;
+        const plotH = chartH - padTop - padBottom;
+        const width = padLeft + moisTries.length * (groupW + gapGroup) + 10;
+        const scaleY = v => Math.max(0, (v / maxVal) * plotH);
+
+        let svg = `<svg width="${width}" height="${chartH}" viewBox="0 0 ${width} ${chartH}" style="font-family:inherit; overflow:visible;">`;
+        for (let i = 0; i <= 4; i++) {
+            const y = padTop + plotH - (i / 4) * plotH;
+            const val = maxVal * i / 4;
+            svg += `<line x1="${padLeft - 8}" y1="${y}" x2="${width - 6}" y2="${y}" stroke="var(--border)" stroke-width="1" />`;
+            svg += `<text x="${padLeft - 12}" y="${y + 3}" text-anchor="end" font-size="10" fill="var(--text-muted)">${val >= 1000 ? (val / 1000).toFixed(1) + 'k' : val.toFixed(0)}</text>`;
+        }
+        moisTries.forEach((ym, idx) => {
+            const d = parMois[ym];
+            const gx = padLeft + idx * (groupW + gapGroup);
+            const baseY = padTop + plotH;
+            const caH = scaleY(d.ca);
+            const beH = scaleY(d.benefice);
+            const beColor = d.benefice >= 0 ? 'var(--text-color)' : 'var(--danger)';
+            svg += `<rect x="${gx}" y="${baseY - caH}" width="${barW}" height="${caH}" rx="3" fill="var(--success)"><title>${moisLabel(ym)} — Chiffre d'affaires : ${d.ca.toFixed(2)} € (${d.nb} commande${d.nb > 1 ? 's' : ''})</title></rect>`;
+            svg += `<rect x="${gx + barW + gapInGroup}" y="${baseY - beH}" width="${barW}" height="${beH}" rx="3" fill="${beColor}"><title>${moisLabel(ym)} — Bénéfice : ${d.benefice.toFixed(2)} €</title></rect>`;
+            svg += `<text x="${gx + barW / 2}" y="${baseY - caH - 5}" text-anchor="middle" font-size="9" fill="var(--text-color)">${d.ca.toFixed(0)}€</text>`;
+            svg += `<text x="${gx + barW + gapInGroup + barW / 2}" y="${baseY - beH - 5}" text-anchor="middle" font-size="9" fill="var(--text-color)">${d.benefice.toFixed(0)}€</text>`;
+            svg += `<text x="${gx + groupW / 2}" y="${baseY + 18}" text-anchor="middle" font-size="10" fill="var(--text-muted)">${moisLabel(ym)}</text>`;
+        });
+        svg += `</svg>`;
+        wrap.innerHTML = svg;
     }
 
     function editerAchatRow(id) {
@@ -1391,7 +1480,7 @@
             tbodyV.innerHTML += `
                 <tr id="vente-${v.id}">
                     <td><span style="color:var(--text-muted); font-size:11px;">${formatFr(v.date)}</span><br><strong>➔ ${dateLivraisonAffiche}</strong></td>
-                    <td><strong>${escapeHtml(v.client)}</strong></td>
+                    <td><strong>${escapeHtml(v.client)}</strong>${v.telephone ? `<br><span style="font-size:11px; color:var(--text-muted);">📞 ${escapeHtml(v.telephone)}</span>` : ''}${v.adresseLivraison ? `<br><span style="font-size:11px; color:var(--text-muted);">📍 ${escapeHtml(v.adresseLivraison)}</span>` : ''}</td>
                     <td>${descArticlesHtml}</td>
                     <td>${fraisLivraison > 0 ? `<strong style="color:var(--blue); background:rgba(212,196,180,0.35); padding:3px 8px; border-radius:4px;">🚚 ${fraisLivraison.toFixed(2)} €</strong>` : `<span style="color:var(--text-muted); font-size:12px;">—</span>`}</td>
                     <td><strong style="color:var(--danger)">${coutTotal.toFixed(2)} €</strong></td>
